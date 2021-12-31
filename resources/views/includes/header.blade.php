@@ -303,16 +303,11 @@
                                                     class="message-item d-flex align-items-center border-bottom px-3 py-2">
                                                     <span class="user-img position-relative d-inline-block"> 
 
-                                  @if(Session::has('image'))
-                                        <img src="{{Session::get('image')}}" class="rounded-circle" />
+                                        <img src="{{\App\Models\User::where('id',Session::get('id'))->pluck('image')[0]}}" class="rounded-circle" />
                                          <img
-                                                            src="{{Session::get('image')}}" alt="user"
+                                                            src="{{\App\Models\User::where('id',Session::get('id'))->pluck('image')[0]}}" alt="user"
                                                             class="rounded-circle w-100">
-@else
- <img
-                                                            src="{{ asset('assets/admin/images/users/1.jpg') }}" alt="user"
-                                                            class="rounded-circle w-100">
-@endif
+
                                                         
 
                                                             <span
@@ -330,7 +325,7 @@
                                                     <span class="user-img position-relative d-inline-block"> 
 
 @if(Session::has('image'))
-                                        <img src="{{Session::get('image')}}" class="rounded-circle" />
+                                        <img src="{{\App\Models\User::where('id',Session::get('id'))->pluck('image')[0]}}" class="rounded-circle" />
                                          
                                                                                                                     <img
                                                             src="{{Session::get('image')}}" alt="user"

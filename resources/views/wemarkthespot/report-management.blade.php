@@ -10,7 +10,13 @@
                <div class="col-md-4 col-lg-5  d-flex align-items-stretch">
                   <div class="BoxShade report text-center w-100">
                      <p>Total number of view on business profile</p>
-                     <p class="totle">34K Views</p>
+                     <p class="totle">
+                     @if($BusinessVisits>1000)
+                     {{$BusinessVisits}} K 
+                     @else
+                     {{$BusinessVisits}}
+                     @endif
+                     Views</p>
                   </div>
                </div>
                <div class="col-md-8 col-lg-7 d-flex align-items-stretch">
@@ -19,13 +25,13 @@
                      <div class="col-md-6 col-lg-7 d-flex align-items-stretch">
                         <div class="BoxShade report text-center w-100">
                            <p>Total Number of check ins</p>
-                           <p class="totle">477</p>
+                           <p class="totle">{{$totalCheckin}}</p>
                         </div>
                      </div>
                      <div class="col-md-6 col-lg-5 d-flex align-items-stretch">
                         <div class="BoxShade report  text-center w-100">
                            <p>Overall Rating</p>
-                           <p class="totle">4.7<span class="icon-star"></span></p>
+                           <p class="totle">{{$OverallRating}}<span class="icon-star"></span></p>
                         </div>
                      </div>
                   </div>

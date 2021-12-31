@@ -14,26 +14,45 @@
                   <div class="login text-center w-100">
                      <div class=" text-center">
                         <h1 class="title">OTP Verification</h1>
-                        <p>We have send a verification code to your registered email address</p>
+                        <p>We have sent a verification code to your registered email address</p>
+                        <span id="timer">Time left: 2:00</span>
                         <span id="errormsg" style="color:red"></span>
                      </div>
-                  
-                     <form action="{{url('change-password')}}" id="verify_otp" method="post">
+                       @if (\Session::has('message'))
+                    <div class="alert alert-success">
+                        <ul>
+                            <li>{!! \Session::get('message') !!}</li>
+                        </ul>
+                    </div>
+                @endif
+                     <form action="javascript:void(0)" id="verify_otp" method="post">
                         @csrf
                      <input type="hidden" name="email" value="{{$user_data->email}}">
-                        <div class="my-5 d-flex justify-content-center">
-                           <input type="text" name="digit1" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="form-control" required>
-                           <input type="text" name="digit2" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');"  class="form-control" required>
-                           <input type="text" name="digit3" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="form-control" required>
-                           <input type="text" name="digit4" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="form-control" required>
-                           <input type="text" name="digit5" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="form-control" required>
-                           <input type="text" name="digit6" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="form-control" required>
-                        </div>
+                         <div class="my-5 d-flex justify-content-center digit-group"  data-group-name="digits" data-autosubmit="false" autocomplete="off">
+                           
+                           <input type="text" name="digit1" id="digit-1" name="digit-1" maxlength="1" data-next="digit-2" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="form-control" >
 
+                           <input type="text" name="digit2" id="digit-2" name="digit-2" maxlength="1" data-next="digit-3" data-previous="digit-1" oninput="this.value=this.value.replace(/[^0-9]/g,'');"  class="form-control" >
+                           <input type="text" name="digit3" id="digit-3" maxlength="1" data-next="digit-4" data-previous="digit-2" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="form-control" >
+                           <input type="text" name="digit4" id="digit-4" maxlength="1" data-next="digit-5" data-previous="digit-3" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="form-control" >
+                           <input type="text" name="digit5" id="digit-5" maxlength="1" data-next="digit-6" data-previous="digit-4" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="form-control" >
+                           <input type="text" name="digit6" id="digit-6" maxlength="1" data-next="digit-7" data-previous="digit-5" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="form-control" >
+                        </div>
+                        <span id="errormsgotp" style="color:Red"></span>
+                    
+                      
                         <div class="w-50 mx-auto my-5">
                            <button type="submit" class="btn btn-primary w-100">Verify</button>
                         </div>
+                            <span id="lblrecendotp" >Resend OTP</span>
+                              <a href="{{$resend_otp}}" disabled class="f-16 fm secondary-100 " disabled = "true" id="resendotp">Resend OTP</a>
                      </form>
+       <!--               <form method="get" class="digit-group" data-group-name="digits" data-autosubmit="false" autocomplete="off">
+   <input type="text" id="digit-1" name="digit-1" data-next="digit-2" />
+   <input type="text" id="digit-2" name="digit-2" data-next="digit-3" data-previous="digit-1" />
+   <input type="text" id="digit-3" name="digit-3" data-next="digit-4" data-previous="digit-2" />
+   <input type="text" id="digit-4" name="digit-4" data-next="digit-5" data-previous="digit-3" />
+</form> -->
                   </div>
                </div>
             </div>
@@ -54,40 +73,91 @@
          </div>
       </div>
 @include("inc/footer");
+<script>
+
+    $(document).ready(function() {
+        //function disableBack() { window.history.forward() }
+
+      //  window.onload = disableBack();
+      //  window.onpageshow = function(evt) { if (evt.persisted) disableBack() }
+    });
+
+</script>
+
+
+<script>
+   let timerOn = true;
+
+function timer(remaining) {
+  var m = Math.floor(remaining / 60);
+  var s = remaining % 60;
+  
+  m = m < 10 ? '0' + m : m;
+  s = s < 10 ? '0' + s : s;
+  document.getElementById('timer').innerHTML = "Your OTP Expire In "+ m + ':' + s;
+  remaining -= 1;
+  
+
+  if(remaining >= 0 && timerOn) {
+    setTimeout(function() {
+        timer(remaining);
+    }, 1000);
+    return;
+  }
+  else
+  {
+   $("#lblrecendotp").hide();
+     $('#resendotp').show();
+  }
+
+  if(!timerOn) {
+    // Do validate stuff here
+    return;
+  }
+  
+  // Do timeout stuff here
+  // alert('Timeout for otp');
+}
+//timer(120);
+timer(60);
+//timer(5);
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
 <script>
    $(function(){
-   
+      $("#lblrecendotp").css({"color":'#d66821','cursor':"no-drop"});
+      $("#resendotp").hide();
+        // alert($("#resendotp").attr("href"));
    $("#verify_otp").validate({
       rules: {
-         digit1: {
-            required: true,
-         },
-         digit2: {
-            required: true,
-         },
-         digit3: {
-            required: true,
-         },
-         digit4: {
-            required: true,
-         },
-         digit5: {
-            required: true,
-         },
+         // digit1: {
+         //    required: true,
+         // },
+         // digit2: {
+         //    required: true,
+         // },
+         // digit3: {
+         //    required: true,
+         // },
+         // digit4: {
+         //    required: true,
+         // },
+         // digit5: {
+         //    required: true,
+         // },
 
-         digit6: {
-            required: true,
-         },
+         // digit6: {
+         //    required: true,
+         // },
       },
       
       messages: {
-         digit1: {required: "Please enter otp",},
-         digit2: {required: "Please enter otp",},
-         digit3: {required: "Please enter otp",},
-         digit4: {required: "Please enter otp",},
-         digit5: {required: "Please enter otp",},
-         digit6: {required: "Please enter otp",},
+         //digit1: {required: "Please enter otp",},
+         // digit2: {required: "Please enter otp",},
+         // digit3: {required: "Please enter otp",},
+         // digit4: {required: "Please enter otp",},
+         // digit5: {required: "Please enter otp",},
+         // digit6: {required: "Please enter otp",},
 
       },
       submitHandler: function(form) {
@@ -105,8 +175,9 @@
             
             success:function(data) { 
             var obj = JSON.parse(data);
-            
+          // alert(obj.message);
             if(obj.status==true){
+               $(".alert-success").hide();
                 $("#staticBackdrop").modal('show');
                $("#msgotp").text(obj.message);
                $("#errormsg").show();
@@ -118,8 +189,19 @@
                //     }, 2000);
             }
             else{
+                              $(".alert-success").hide();
+             //  alert(obj.status);
                if(obj.status==false){
-                  $("#errormsg").text(obj.nessage);
+                  if(obj.otp==false)
+                  {
+                     $("#errormsgotp").text(obj.message);
+                  }
+                  else
+                  {
+                  $("#errormsg").text(obj.message);   
+                  }
+                 //  $("#errormsg").show();
+                  
                   //  $("#staticBackdrop").modal('show');
                 //$("#msgotp").text(obj.message);
                // $("#btnok").attr("href","#");
@@ -132,3 +214,35 @@
    }); 
 });
 </script>
+<script>
+$('.digit-group').find('input').each(function() {
+   $(this).attr('maxlength', 1);
+   $(this).on('keyup', function(e) {
+      var parent = $($(this).parent());
+      
+      if(e.keyCode === 8 || e.keyCode === 37) {
+         var prev = parent.find('input#' + $(this).data('previous'));
+         
+         if(prev.length) {
+            $(prev).select();
+         }
+      } else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+         var next = parent.find('input#' + $(this).data('next'));
+         
+         if(next.length) {
+            $(next).select();
+         } else {
+            if(parent.data('autosubmit')) {
+               parent.submit();
+            }
+         }
+      }
+   });
+});   
+</script>
+
+<style>
+.digit-group label.error {
+    display: none !important;
+}	
+</style>

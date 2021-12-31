@@ -59,190 +59,190 @@ messages: {
 	}
 });
 
-$("#category_add1").validate({
-rules: {
-	name: {required: true,},
-	short_information: {required: true,},  
-	image: {required: true},
-	detail_information: {required: true,},
-	},
-messages: {
-	name: {required: "Please enter category",},
-	short_information: {required: "Please enter short information",},   
-	image: {required: "Please select image",},
-	detail_information: {required: "Please enter detail information",},
-},
-	submitHandler: function(form) {
-	   var formData= new FormData(jQuery('#category_add1')[0]);
-	jQuery.ajax({
-			url: host_url+"category-data",
-			type: "post",
-			cache: false,
-			data: formData,
-			processData: false,
-			contentType: false,
+// $("#category_add1").validate({
+// rules: {
+// 	name: {required: true,},
+// 	short_information: {required: true,},  
+// 	image: {required: true},
+// 	detail_information: {required: true,},
+// 	},
+// messages: {
+// 	name: {required: "Please enter category",},
+// 	short_information: {required: "Please enter short information",},   
+// 	image: {required: "Please select image",},
+// 	detail_information: {required: "Please enter detail information",},
+// },
+// 	submitHandler: function(form) {
+// 	   var formData= new FormData(jQuery('#category_add1')[0]);
+// 	jQuery.ajax({
+// 			url: host_url+"category-data",
+// 			type: "post",
+// 			cache: false,
+// 			data: formData,
+// 			processData: false,
+// 			contentType: false,
 			
-			success:function(data) { 
-			var obj = JSON.parse(data);
-			if(obj.status==true){
-				jQuery('#name_error').html('');
-				jQuery('#email_error').html('');
-				jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
-				setTimeout(function(){
-					jQuery('.result').html('');
-					window.location = host_url+"manager_category";
-				}, 2000);
-			}
-			else{
-				if(obj.status==false){
-					jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
-				}
+// 			success:function(data) { 
+// 			var obj = JSON.parse(data);
+// 			if(obj.status==true){
+// 				jQuery('#name_error').html('');
+// 				jQuery('#email_error').html('');
+// 				jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+// 				setTimeout(function(){
+// 					jQuery('.result').html('');
+// 					window.location = host_url+"manager_category";
+// 				}, 2000);
+// 			}
+// 			else{
+// 				if(obj.status==false){
+// 					jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+// 				}
 				
-			}
-			}
-		});
-	}
-});
-$("#category_edit1").validate({
-	rules: {
-		name: {required: true,},
-		short_information: {required: true,},  
+// 			}
+// 			}
+// 		});
+// 	}
+// });
+// $("#category_edit1").validate({
+// 	rules: {
+// 		name: {required: true,},
+// 		short_information: {required: true,},  
 		
-		detail_information: {required: true,},
-		},
-	messages: {
-		name: {required: "Please enter category",},
-		short_information: {required: "Please enter short information",},   
+// 		detail_information: {required: true,},
+// 		},
+// 	messages: {
+// 		name: {required: "Please enter category",},
+// 		short_information: {required: "Please enter short information",},   
 	
-		detail_information: {required: "Please enter detail information",},
-	},
-		submitHandler: function(form) {
-		   var formData= new FormData(jQuery('#category_edit1')[0]);
-		jQuery.ajax({
-				url: host_url+"category-edit",
-				type: "post",
-				cache: false,
-				data: formData,
-				processData: false,
-				contentType: false,
+// 		detail_information: {required: "Please enter detail information",},
+// 	},
+// 		submitHandler: function(form) {
+// 		   var formData= new FormData(jQuery('#category_edit1')[0]);
+// 		jQuery.ajax({
+// 				url: host_url+"category-edit",
+// 				type: "post",
+// 				cache: false,
+// 				data: formData,
+// 				processData: false,
+// 				contentType: false,
 				
-				success:function(data) { 
-				var obj = JSON.parse(data);
-				if(obj.status==true){
-					jQuery('#name_error').html('');
-					jQuery('#email_error').html('');
-					jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
-					setTimeout(function(){
-						jQuery('.result').html('');
-						window.location = host_url+"manager_category";
-					}, 2000);
-				}
-				else{
-					if(obj.status==false){
-						jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
-					}
+// 				success:function(data) { 
+// 				var obj = JSON.parse(data);
+// 				if(obj.status==true){
+// 					jQuery('#name_error').html('');
+// 					jQuery('#email_error').html('');
+// 					jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+// 					setTimeout(function(){
+// 						jQuery('.result').html('');
+// 						window.location = host_url+"manager_category";
+// 					}, 2000);
+// 				}
+// 				else{
+// 					if(obj.status==false){
+// 						jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+// 					}
 					
-				}
-				}
-			});
-		}
-	});
+// 				}
+// 				}
+// 			});
+// 		}
+// 	});
 
 
-	$("#subcategory_add1").validate({
-		rules: {
-			category_id: {required: true,},
-			name: {required: true,},
-			short_information: {required: true,},  
-			image: {required: true},
-			detail_information: {required: true,},
-			},
-		messages: {
-			category_id:{required:"Please select sub category",},
-			name: {required: "Please enter sub category name",},
-			short_information: {required: "Please enter short information",},   
-			image: {required: "Please select image",},
-			detail_information: {required: "Please enter detail information",},
-		},
-			submitHandler: function(form) {
-			   var formData= new FormData(jQuery('#subcategory_add1')[0]);
-			jQuery.ajax({
-					url: host_url+"subcategory-data",
-					type: "post",
-					cache: false,
-					data: formData,
-					processData: false,
-					contentType: false,
+	// $("#subcategory_add1").validate({
+	// 	rules: {
+	// 		category_id: {required: true,},
+	// 		name: {required: true,},
+	// 		short_information: {required: true,},  
+	// 		image: {required: true},
+	// 		detail_information: {required: true,},
+	// 		},
+	// 	messages: {
+	// 		category_id:{required:"Please select sub category",},
+	// 		name: {required: "Please enter sub category name",},
+	// 		short_information: {required: "Please enter short information",},   
+	// 		image: {required: "Please select image",},
+	// 		detail_information: {required: "Please enter detail information",},
+	// 	},
+	// 		submitHandler: function(form) {
+	// 		   var formData= new FormData(jQuery('#subcategory_add1')[0]);
+	// 		jQuery.ajax({
+	// 				url: host_url+"subcategory-data",
+	// 				type: "post",
+	// 				cache: false,
+	// 				data: formData,
+	// 				processData: false,
+	// 				contentType: false,
 					
-					success:function(data) { 
-						var obj = JSON.parse(data);
-						if(obj.status==true){
-							jQuery('#name_error').html('');
-							jQuery('#email_error').html('');
-							jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
-							setTimeout(function(){
-								jQuery('.result').html('');
-								window.location = host_url+"manage_sub_category";
-							}, 2000);
-						}
-						else
-						{
-							if(obj.status==false){
-								jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
-							}
+	// 				success:function(data) { 
+	// 					var obj = JSON.parse(data);
+	// 					if(obj.status==true){
+	// 						jQuery('#name_error').html('');
+	// 						jQuery('#email_error').html('');
+	// 						jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+	// 						setTimeout(function(){
+	// 							jQuery('.result').html('');
+	// 							window.location = host_url+"manage_sub_category";
+	// 						}, 2000);
+	// 					}
+	// 					else
+	// 					{
+	// 						if(obj.status==false){
+	// 							jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+	// 						}
 						
-						}
-					}
-				});
-			}
-		});
-		$("#subcategory_edit1").validate({
-			rules: {
-				category_id: {required: true,},
-				name: {required: true,},
-				short_information: {required: true,},  
+	// 					}
+	// 				}
+	// 			});
+	// 		}
+	// 	});
+		// $("#subcategory_edit1").validate({
+		// 	rules: {
+		// 		category_id: {required: true,},
+		// 		name: {required: true,},
+		// 		short_information: {required: true,},  
 			
-				detail_information: {required: true,},
-				},
-			messages: {
-				category_id:{required:"Please select sub category",},
-				name: {required: "Please enter sub category name",},
-				short_information: {required: "Please enter short information",},   
+		// 		detail_information: {required: true,},
+		// 		},
+		// 	messages: {
+		// 		category_id:{required:"Please select sub category",},
+		// 		name: {required: "Please enter sub category name",},
+		// 		short_information: {required: "Please enter short information",},   
 			
-				detail_information: {required: "Please enter detail information",},
-			},
-				submitHandler: function(form) {
-				   var formData= new FormData(jQuery('#subcategory_edit1')[0]);
-				jQuery.ajax({
-						url: host_url+"subcategory-update",
-						type: "post",
-						cache: false,
-						data: formData,
-						processData: false,
-						contentType: false,
+		// 		detail_information: {required: "Please enter detail information",},
+		// 	},
+		// 		submitHandler: function(form) {
+		// 		   var formData= new FormData(jQuery('#subcategory_edit1')[0]);
+		// 		jQuery.ajax({
+		// 				url: host_url+"subcategory-update",
+		// 				type: "post",
+		// 				cache: false,
+		// 				data: formData,
+		// 				processData: false,
+		// 				contentType: false,
 						
-						success:function(data) { 
-							var obj = JSON.parse(data);
-							if(obj.status==true){
-								jQuery('#name_error').html('');
-								jQuery('#email_error').html('');
-								jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
-								setTimeout(function(){
-									jQuery('.result').html('');
-									window.location = host_url+"manage_sub_category";
-								}, 2000);
-							}
-							else
-							{
-								if(obj.status==false){
-									jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
-								}
+		// 				success:function(data) { 
+		// 					var obj = JSON.parse(data);
+		// 					if(obj.status==true){
+		// 						jQuery('#name_error').html('');
+		// 						jQuery('#email_error').html('');
+		// 						jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+		// 						setTimeout(function(){
+		// 							jQuery('.result').html('');
+		// 							window.location = host_url+"manage_sub_category";
+		// 						}, 2000);
+		// 					}
+		// 					else
+		// 					{
+		// 						if(obj.status==false){
+		// 							jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+		// 						}
 							
-							}
-						}
-					});
-				}
-			});
+		// 					}
+		// 				}
+		// 			});
+		// 		}
+		// 	});
 $(".add_workout_submitbtn").on("click",function(){
 
 	$(".box_number_of_day").each(function(){
@@ -325,7 +325,7 @@ $(".add_workout_submitbtn").on("click",function(){
 		$.ajax({
 			type: "POST",
 			dataType: "json",
-			url: host_url+'category_status/'+user_id,
+			url: host_url+'category_status/',
 			data: {'_token':  token,'status': status, 'id': user_id},
 			success: function(data){
 			  setTimeout(function(){
@@ -876,130 +876,86 @@ $("#workout_plan_edit").validate({
 
 
 //------------------set_password_form_fitness_trainer-------------------------
-$("#set_password_form_fitness_trainer").validate({
-rules: {
+// $("#set_password_form_fitness_trainer").validate({
+// rules: {
 	
-	password: {required: true,},
-	},
-	messages: {
-	password: {required: "Please enter password",},
-},
-	submitHandler: function(form) {
-	   var formData= new FormData(jQuery('#set_password_form_fitness_trainer')[0]);
-	jQuery.ajax({
-			url: host_url+"set_password_fitness_trainer",
-			type: "post",
-			cache: false,
-			data: formData,
-			processData: false,
-			contentType: false,
+// 	password: {required: true,},
+// 	},
+// 	messages: {
+// 	password: {required: "Please enter password",},
+// },
+// 	submitHandler: function(form) {
+// 	   var formData= new FormData(jQuery('#set_password_form_fitness_trainer')[0]);
+// 	jQuery.ajax({
+// 			url: host_url+"set_password_fitness_trainer",
+// 			type: "post",
+// 			cache: false,
+// 			data: formData,
+// 			processData: false,
+// 			contentType: false,
 			
-			success:function(data) { 
-			var obj = JSON.parse(data);
-			if(obj.status==true){
-				jQuery('#name_error').html('');
-				jQuery('#email_error').html('');
-				jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
-				setTimeout(function(){
-					jQuery('.result').html('');
-					window.location = host_url+"manager_business";
-				}, 3000);
-			}
-			else{
-				if(obj.status==false){
-					jQuery('#name_error').html(obj.message);
-					jQuery('#name_error').css("display", "block");
-				}
-			}
-			}
-		});
-	}
-});
+// 			success:function(data) { 
+// 			var obj = JSON.parse(data);
+// 			if(obj.status==true){
+// 				jQuery('#name_error').html('');
+// 				jQuery('#email_error').html('');
+// 				jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+// 				setTimeout(function(){
+// 					jQuery('.result').html('');
+// 					window.location = host_url+"manager_business";
+// 				}, 3000);
+// 			}
+// 			else{
+// 				if(obj.status==false){
+// 					jQuery('#name_error').html(obj.message);
+// 					jQuery('#name_error').css("display", "block");
+// 				}
+// 			}
+// 			}
+// 		});
+// 	}
+// });
 
-$("#rejected_request").validate({
-rules: {
+// $("#rejected_request").validate({
+// rules: {
 	
-	reason: {required: true,},
-	},
-	messages: {
-	reason: {required: "Please enter reason",},
-},
-	submitHandler: function(form) {
-	   var formData= new FormData(jQuery('#rejected_request')[0]);
-	jQuery.ajax({
-			url: host_url+"set_password_fitness_trainer",
-			type: "post",
-			cache: false,
-			data: formData,
-			processData: false,
-			contentType: false,
+// 	reason: {required: true,},
+// 	},
+// 	messages: {
+// 	reason: {required: "Please enter reason",},
+// },
+// 	submitHandler: function(form) {
+// 	   var formData= new FormData(jQuery('#rejected_request')[0]);
+// 	jQuery.ajax({
+// 			url: host_url+"set_password_fitness_trainer",
+// 			type: "post",
+// 			cache: false,
+// 			data: formData,
+// 			processData: false,
+// 			contentType: false,
 			
-			success:function(data) { 
-			var obj = JSON.parse(data);
-			if(obj.status==true){
-				jQuery('#name_error').html('');
-				jQuery('#email_error').html('');
-				jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
-				setTimeout(function(){
-					jQuery('.result').html('');
-					window.location = host_url+"manager_business";
-				}, 3000);
-			}
-			else{
-				if(obj.status==false){
-					jQuery('#name_error').html(obj.message);
-					jQuery('#name_error').css("display", "block");
-				}
-			}
-			}
-		});
-	}
-});
+// 			success:function(data) { 
+// 			var obj = JSON.parse(data);
+// 			if(obj.status==true){
+// 				jQuery('#name_error').html('');
+// 				jQuery('#email_error').html('');
+// 				jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+// 				setTimeout(function(){
+// 					jQuery('.result').html('');
+// 					window.location = host_url+"manager_business";
+// 				}, 3000);
+// 			}
+// 			else{
+// 				if(obj.status==false){
+// 					jQuery('#name_error').html(obj.message);
+// 					jQuery('#name_error').css("display", "block");
+// 				}
+// 			}
+// 			}
+// 		});
+// 	}
+// });
 
-$("#user_deactive").validate({
-	rules: {
-		
-		reason: {required: true,},
-		},
-		messages: {
-		reason: {required: "Please enter reason",},
-	},
-		submitHandler: function(form) {
-		   var formData= new FormData(jQuery('#user_deactive')[0]);
-	//alert("user_id"+$("#user_id").val());
-		   formData.append("user_id",$("#user_id").val());
-		 
-		jQuery.ajax({
-				url: host_url+"userchangestatus",
-				type: "post",
-				cache: false,
-				data: formData,
-				processData: false,
-				contentType: false,
-				
-				success:function(data) { 
-				var obj = JSON.parse(data);
-				if(obj.status==true){
-					$("#u_reject").modal('hide');
-					jQuery('#name_error').html('');
-					jQuery('#email_error').html('');
-					jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
-				//	jQuery('.result').html('');
-					setTimeout(function(){
-						
-						window.location = host_url+"user_list";
-					}, 3000);
-				}
-				else{
-					if(obj.status==false){
-						jQuery('#name_error').html(obj.message);
-						jQuery('#name_error').css("display", "block");
-					}
-				}
-				}
-			});
-		}
-	});
 	// $("#admin_change_psd").on("click",function(){
 	// 	old_password = $("#user_change_password").val();
 	// 	new_password = $("#new_password").val();
@@ -1011,11 +967,18 @@ $("#user_deactive").validate({
 
 	// });
 
+patten ="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$";
+
+
+      jQuery.validator.addMethod("passwordcheck", function(value, element, param) {
+    return value.match(patten);
+},'Please enter valid password');
+
 $("#user_change_password").validate({
 	rules: {
-		old_password: {required: true,},
+		old_password: {required: true,passwordcheck:true,},
 		
-		new_password: {required: true,},
+		new_password: {required: true,passwordcheck:true,},
 		
 		confirm_password : {
 			required: true,
@@ -1027,7 +990,9 @@ $("#user_change_password").validate({
 
 		old_password: {required: "Please enter old password",},
 		new_password:{required:"please enter new password",},
-		confirm_password:{required:"please enter confirm  password"}
+
+	
+	confirm_password:{required:"Please enter confirm password", equalTo:"Password and confirm password must be same"},
 	},
 		submitHandler: function(form) {
 		   var formData= new FormData(jQuery('#user_change_password')[0]);
@@ -1046,7 +1011,7 @@ $("#user_change_password").validate({
 				if(obj.status==true){
 					jQuery('#name_error').html('');
 					jQuery('#email_error').html('');
-					jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Change Password Successfull.</strong> </div>");
+					jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Change Password Successfully.</strong> </div>");
 					setTimeout(function(){
 						jQuery('.result').html('');
 						window.location = host_url+"user_list";

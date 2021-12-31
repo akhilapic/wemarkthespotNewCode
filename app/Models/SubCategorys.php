@@ -17,5 +17,8 @@ class SubCategorys extends Model
         'name', 'category_id', 'short_information','image','status','detail_information','created_at','updated_at'
     ];
 
+    function category(){
+      $this->belongsTo('App\Models\Categorys','category_id','id');
+   }
   
 }

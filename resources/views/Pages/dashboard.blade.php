@@ -9,16 +9,16 @@
                 <!-- Bread crumb and right sidebar toggle -->
                 <!-- ============================================================== -->
                 <div class="row page-titles">
-					<div class="col-md-5 col-12 align-self-center">
-						<h4 class="text-themecolor mb-0">Dashboard</h4>
-					</div>
-					<div class="col-md-7 col-12 align-self-center d-none d-md-block">
-						<ol class="breadcrumb mb-0 p-0 bg-transparent fa-pull-right">
-							<li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-							<li class="breadcrumb-item active">Dashboard</li>
-						</ol>
-					</div>
-				</div>
+                    <div class="col-md-5 col-12 align-self-center">
+                        <h4 class="text-themecolor mb-0">Dashboard</h4>
+                    </div>
+                    <div class="col-md-7 col-12 align-self-center d-none d-md-block">
+                        <ol class="breadcrumb mb-0 p-0 bg-transparent fa-pull-right">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item active">Dashboard</li>
+                        </ol>
+                    </div>
+                </div>
                 <!-- ============================================================== -->
                 <!-- End Bread crumb and right sidebar toggle -->
                 <!-- ============================================================== -->
@@ -26,7 +26,7 @@
             <!-- Container fluid  -->
             <!-- ============================================================== -->
             <div class="container-fluid" >
-                <div class="card-group" style="display:none">
+                <div class="card-group" style="display:">
                     <!-- Column -->
                     <div class="card" style="display:none">
                         <div class="card-body text-center">
@@ -41,33 +41,33 @@
                     </div>
                     <!-- Column -->
                     <!-- Column -->
-                    <div class="card" style="display:none">
+                    <div class="card" style="display:">
                         <div class="card-body text-center">
-                            <h4 class="text-center">Total Visit</h4>
+                            <h4 class="text-center">Total Users</h4>
                             <div class="d-flex justify-content-center mt-3">
                                 <div id="total-visit" style="width: 120px"></div>
                             </div>
                         </div>
                         <div class="p-2 rounded border-top text-center">
-                            <h4 class="font-medium mb-0"><i class="ti-angle-down text-danger"></i> 456</h4>
+                            <h4 class="font-medium mb-0"><i class="ti-angle-down text-danger"></i> {{$total_user}}</h4>
                         </div>
                     </div>
                     <!-- Column -->
                     <!-- Column -->
                     <div class="card">
                         <div class="card-body text-center">
-                            <h4 class="text-center">Bounce rate</h4>
+                            <h4 class="text-center">Total Business Users</h4>
                             <div class="d-flex justify-content-center mt-3">
                                 <div id="bounce-rate" style="width: 120px"></div>
                             </div>
                         </div>
                         <div class="p-2 rounded border-top text-center">
-                            <h4 class="font-medium mb-0"><i class="ti-angle-up text-success"></i> 12456</h4>
+                            <h4 class="font-medium mb-0"><i class="ti-angle-up text-success"></i> {{$total_buiness}}</h4>
                         </div>
                     </div>
                     <!-- Column -->
                     <!-- Column -->
-                    <div class="card">
+                    <div class="card" style="display:none">
                         <div class="card-body text-center">
                             <h4 class="text-center">Page Views</h4>
                             <div class="d-flex justify-content-center mt-3">

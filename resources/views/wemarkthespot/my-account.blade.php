@@ -17,6 +17,14 @@
    .iti.iti--allow-dropdown {
       width: 100%;
    }
+label.error {
+    display: inline-block;
+    width: 100%;
+    clear: both;
+    margin-top: 8px;
+    color: #db0707;
+}
+
 
      </style>
    <main class="my-accont">
@@ -30,19 +38,28 @@
                         <figure>
                         @if($account->business_images)   
                         <img src="{{$account->business_images}}">
-                        @else
+                        @elseif($account->image)
+                        <img src="{{$account->image}}">
+                      
+                        else
+                      
                         <img src="{{asset('assets/images/img-6.png')}}">
                         @endif
 
                      </figure>
                      @if($account->business_name)  
-                     <p><strong>{{$account->business_name}}</strong></p>
+                     <p>{{$account->business_name}}</p>
                      @else
-                     <p><strong>Royal Bar</strong></p>
+                     <p>Business Name</p>
                      @endif
-                        
-                        <p class="rating">4.7 <span class="icon-star"></span></p>
-                        <p class="verify">Verified</p>
+                     <p class="rating">
+                     @if($account->ratting)  
+                     {{$account->ratting}}
+                     @else
+                     0.0
+                     @endif
+                     <span class="icon-star"></span></p>
+
                      </div>
                      <div class="BoxShade">
                         <ul>
@@ -58,11 +75,12 @@
                   </aside>
                </div>
                {{session('message')}}
-
                <div class="col-md-8">
                   <h4 class="acTitle">My Profile</h4>
-                  <span class="result" style="color:red"></span>
-                 <form  action="" id="my_profile_edit" method="post" enctype="multipart/form-data">
+ <!--                  <span class="result" style="color:red"></span> -->
+                  <div class="alert alert-warning result"></div>
+
+                 <form  action="javascript:void(0)" id="my_profile_edit" method="post" enctype="multipart/form-data">
                      <div class="thumb-up mb-5">
                         <div class="profile-box d-flex flex-wrap align-content-center">
                            @if($account->image)
@@ -87,8 +105,23 @@
                         </div>
                         <div class="col-md-6">
                         <label for="phone-number" class="form-label ">Phone Number</label><br/>
-                        <input type="hidden" id="country_code"  name="country_code" />
-                           <input type="text" class="form-control" oninput="this.value=this.value.replace(/[^0-9]/g,'');" name="phone" id="phone" value="{{$account->phone}}" maxlength="10" placeholder="Enter Phone Number">
+						
+						    <div class="input-group">
+                       <select name="country_code" id="country_code" class="form-select" style="padding: 0px 15px;max-width: 200px;background-color: #f5f5f5;">
+                             @foreach($country_codedata as $c)
+                            
+                              @if($account->country_code == $c->code)
+                              <option value="{{$c->code}}" Selected >{{$c->name}}</option>
+                                 @else
+                              <option value="{{$c->code}}">{{$c->name}}</option>
+                              @endif
+                             @endforeach
+                                <!-- <option data-countryCode="DZ" value="213" @if ($account->country_code = "213") Selected @endif>Algeria (+213)</option> -->
+                             </select>
+                          <!--  <input type="text" class="form-control" oninput="this.value=this.value.replace(/[^0-9]/g,'');" name="phone" id="phone" value="{{$account->country_code}}{{$account->phone}}" maxlength="13" maxlength="10" placeholder="Enter Phone Number"> -->
+
+                           <input type="text" class="form-control" oninput="this.value=this.value.replace(/[^0-9]/g,'');" name="phone" id="phone" value="{{$account->phone}}" maxlength="13" maxlength="10" placeholder="Enter Phone Number">
+                        </div>
                         </div>
                         <div class="col-md-6">
                            <label class="form-label">Email</label>
@@ -105,9 +138,16 @@
                         </div>
                         <div class="col-md-12 iconinput">
                            <label for="location" class="form-label">Location</label>
-                           <input type="text" class="form-control" name="location" value="{{$account->location}}" placeholder="Enter Location">
+                           <input type="text" class="form-control" style="height: auto;padding-right: 60px;overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;" id="location" name="location" value="{{$account->location}}" placeholder="Enter Location">
                            <span class="icon-gps"></span>
                         </div>
+                         <input type="hidden" id="latitude" name="lat" value="{{$account->lat}}" class="form-control">
+                                <input type="hidden" name="long" value="{{$account->long}}" id="longitude" class="form-control">
                         <div class="col-md-6">
                            <div><label class="form-label">Select Business Type</label></div>
                            <div class="form-check form-check-inline">
@@ -120,7 +160,7 @@
                            </div>
                         </div>
                         <div class="col-md-6">
-                           <div><label class="form-label">Select Business Category <span style="color:Red">*</span></label></div>
+                           <div><label class="form-label">Select Business Category <span style="color:Red">*</span>      <span id="select_buiness_categoryerror" style="color:red">Please select business category </span></label></div>
                               @foreach($categorylist as $list)
                               @if($list->id == $account->business_category)
                               <div class="form-check form-check-inline">
@@ -135,28 +175,35 @@
                               @endif
                               @endforeach
                         </div>
+
                         <div class="col-md-6">
                            <div><label class="form-label">Upload Commercial License</label></div>
                           @if('public/images/{{$account->upload_doc}}')
-                        <img src="{{$account->upload_doc}}" style="width: 100px;height: 50px;">
+                          <a href= "{{$account->upload_doc}}" target="_blank" class="btn btn-primary" >View</a>
+                       <!--  <img src="{{$account->upload_doc}}" style="width: 100px;height: 50px;"> -->
                         @endif
                         </div>
                         <input type="hidden" id="hiddenbusiness_sub_category" value="{{$account->business_sub_category}}"/>
                         <div class="col-md-6">
                            <div><label class="form-label">Select Sub Category <span style="color:Red">*</span></label></div>
-                           <select id="sub_category" class="form-select" name="business_sub_category">
+                           <select id="sub_category" class="form-select" name="business_sub_category" style="padding: 0px 15px;">
                            
                                  <option value="">Select Sub Category</option>
                                  
-
-                           
                            </select>
                         </div>
                         <div class="col-md-6">
                            <div><label class="form-label">Business Images</label></div>
-                          <input class="form-control" type="file"  name="business_images" name="image" id="img" value="">
-                  <input type="hidden" name="old_business_images" value='{{$account->business_images}}'/>
+                          <input class="form-control" type="file" onchange="loadFile(event)"  name="business_images" name="image" id="img" value="">
+                      <input type="hidden" name="old_business_images" value='{{$account->business_images}}'/>
+
+
+                        <img id="output"/>
+                        @if($account->business_images)
+                        <img src="{{$account->business_images}}" id="business_images_view"/>
+                        @endif
                         </div>
+
                        <!--  <div class="col-md-12">
                            <label for="location" class="form-label">Reason for not uploading commercial license</label>
                            <input type="text" class="form-control" placeholder="Type Reason">
@@ -191,22 +238,73 @@
       </div>
 @include("inc/footer")
 <script src="{{asset('assets/build/js/intlTelInput.js')}}"></script>
-<script type="text/javascript">
-   $(document).ready(function() {
+<style>
+#output,#business_images_view {
+     width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 50px;
+    margin-top: 15px;
+}
+</style>
+<script>
+   $("#output").hide();
+  var loadFile = function(event) {
+    var output = document.getElementById('output');
+    output.src = URL.createObjectURL(event.target.files[0]);
+    output.onload = function() {
+      $("#output").show();
+      $("#business_images_view").hide();
+      URL.revokeObjectURL(output.src) // free memory
+    }
+  };
+</script>
+<!--start Location-->
+ 
+        <script>
 
-      country_code =$(".iti__selected-flag").attr("title");
-         const myArr = country_code.split(": ");
-         c_code ='+1';//myArr[1];
-         $("#country_code").val(c_code);
+        function activatePlacesSearch() {
+            var input = document.getElementById('location');
+            var autocomplete = new google.maps.places.Autocomplete(input);
+
+            autocomplete.addListener('place_changed', function () {
+                var place = autocomplete.getPlace();
+                $('#latitude').val(place.geometry['location'].lat());
+                $('#longitude').val(place.geometry['location'].lng());
+
+                
+            });
+        }
+    </script>
+     <script 
+        src="https://maps.google.com/maps/api/js?key=AIzaSyDXendzNuPChFkDejwv7jbFtqunqRawrk0&libraries=geometry,places&callback=activatePlacesSearch"></script>
+
+  <!-- end Location-->
+<script type="text/javascript">
+
+
+   $(document).ready(function() {
+      $(".result").hide();
+      $("#select_buiness_categoryerror").hide();
+      // country_code =$(".iti__selected-flag").attr("title");
+      //    const myArr = country_code.split(": ");
+      //    c_code ='+1';//myArr[1];
+      //    $("#country_code").val(c_code);
          // console.log($("#country_code").val());
     
     $(".btn_submit_tranning").on("click",function(){
-        country_code =$(".iti__selected-flag").attr("title");
-         const myArr = country_code.split(": ");
-         c_code ='+91';//myArr[1];
-         $("#country_code").val(c_code);
-          console.log($("#country_code").val());
-    
+        // country_code =$(".iti__selected-flag").attr("title");
+        //  const myArr = country_code.split(": ");
+        //  c_code ='+91';//myArr[1];
+        //  $("#country_code").val(c_code);
+        //   console.log($("#country_code").val());
+      
+       var  category_id = $("input[type='radio'].select_buiness_category:checked").val();
+     
+       if (typeof category_id === "undefined") {
+               $("#select_buiness_categoryerror").show();
+         return false;
+         }
       });
    });
     $(function(){
@@ -217,7 +315,7 @@
       {
          host_url = "/development/wemarkthespot/";
 		   var token = $("meta[name='csrf-token']").attr("content");
-      
+      //alert(host_url);
       $.ajax({
          type: 'POST',
 			dataType: "json",
@@ -230,7 +328,8 @@
 
                $("#sub_category").empty();
                $.each(response.data,function(index,value){
-                  op = "<option value=''>Select Sub Category</option>";
+op="";
+               //  op = "<option value=''>Select Sub Category</option>";
                   if(hiddenbusiness_sub_category==value.id)
                   {
                   
@@ -268,7 +367,7 @@
     });
 
 </script>
-  <script>
+<!--   <script>
     var input = document.querySelector("#phone");
     window.intlTelInput(input, {
       // allowDropdown: false,
@@ -293,14 +392,14 @@
       // separateDialCode: true,
       utilsScript: "{{asset('assets/build/js/utils.js')}}",
     });
-  </script>
+  </script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
 <script>
    $(".select_buiness_category").on("change",function(){
       var category_id = $("input[type='radio'].select_buiness_category:checked").val();
       host_url = "/development/wemarkthespot/";
 		var token = $("meta[name='csrf-token']").attr("content");
-      
+       $("#select_buiness_categoryerror").hide();
       $.ajax({
          type: 'POST',
 			dataType: "json",
@@ -313,9 +412,12 @@
             if(response.status==true)
             {
                $("#sub_category").empty();
+                 op="";
+                  op1 = "<option value=''>Select Sub Category</option>";
+                     $("#sub_category").append(op1);
                $.each(response.data,function(index,value){
-                  op = "<option value=''>Select Sub Category</option>";
-                  op+="<option value="+value.id+">"+value.name+"</option>";
+                
+                  op="<option value="+value.id+">"+value.name+"</option>";
                   $("#sub_category").append(op);
                });
             }
@@ -350,17 +452,23 @@
       business_type:{
          required:true,
       },
+      business_name:{
+         required:true,
+      },
       business_sub_category:{required:true},
+    
       
       },
    
    messages: {
       name: {required: "Please enter name",},
+      business_name:{required:"Please enter business name",},
       email: {required: "Please enter valid email",email: "Please enter valid email",},   
-      phone: {required: "Please enter Mobile Number",},
-      business_type:{required:"Please Select Business Type",},
-      business_category:{require:"Please Business Category",},
-      business_sub_category:{require:"Please Select Business Sub Category",},
+      phone: {required: "Please enter mobile number",},
+      business_type:{required:"Please select business type",},
+      business_category:{required:"Please business category",},
+      business_sub_category:{required:"Please select business sub category",},
+     // business_images:{required:"please select business image",},
    },
       submitHandler: function(form) {
          var formData= new FormData(jQuery('#my_profile_edit')[0]);
@@ -383,13 +491,18 @@
 
             if(obj.status==true){
             
+            $(".result").show();
+              $(".result").text(obj.message);
                setTimeout(function(){
-              $(".result").html(obj.message);
+                   $(".result").hide();
+           //   $(".result").html(obj.message);
              window.location.href = "{{route('my_account')}}";
           }, 5000);
             }
-            else{
+            else if(obj.status==false){
                
+               $(".result").show();
+              $(".result").text(obj.message);
             }
             },
          });

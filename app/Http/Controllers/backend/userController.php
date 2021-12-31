@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use DB;
 use Hash;
 use App\Models\User;
+use App\Models\BusinessReviews;
+use App\Models\BusinessFav;
 class userController extends Controller
 {
     public function index()
@@ -14,9 +16,12 @@ class userController extends Controller
 
         //$users = User::where('role',97)->get();
         //$users = DB::table('users')->get();
-        $users=User::where('role',97)->where('id', '!=' , 8)->where('id', '!=' , 72)->get();
-    //    dd($users);
-
+        $users=User::where('role',97)->where('id', '!=' , 8)->where('id', '!=' , 72)->orderby('id','desc')->get();
+     
+        
+       
+     
+       
         return view('Pages.customer', compact('users'));
     }
     public function create() {
@@ -88,7 +93,41 @@ class userController extends Controller
     public function userview(Request $request,$id){
     $id = $request->id;
     $user = DB::table('users')->where('id', $id)->first();
-    return view('Pages.master.user_view',compact('user'));
+    $business_review = BusinessReviews::join('users as business_users', 'business_users.id', '=', 'business_reviews.business_id')
+   ->where('business_reviews.user_id',$id)
+   ->where('business_reviews.type',"REVIEW")
+   ->select(
+       "business_reviews.*",
+       "business_users.business_name as business_name",
+       "business_users.business_images",
+   )
+   ->orderby('id',"desc")
+   ->get();
+
+
+   $checkIn = BusinessReviews::join('users as business_users', 'business_users.id', '=', 'business_reviews.business_id')
+   ->where('business_reviews.user_id',$id)
+   ->where('business_reviews.type',"CHECK_IN")
+   ->select(
+       "business_reviews.*",
+       "business_users.business_name as business_name",
+       "business_users.business_images",
+   )
+   ->orderby('id',"desc")
+   ->get();
+
+$BusinessFav = BusinessFav::join('users', 'users.id', '=', 'business_fav.user_id')
+->where('business_fav.user_id',$id)
+->select(
+    "business_fav.*", 
+    "users.business_name" ,
+    "users.business_images"
+)
+->orderby('id',"desc")
+->get();
+
+   // dd($business_review);
+    return view('Pages.master.user_view',compact('user','business_review','checkIn','BusinessFav'));
 }
 /*
    public function userView($id){
@@ -374,17 +413,38 @@ class userController extends Controller
 
             public function userchangeStatus(Request $request)
             {
+               // dd($request->input());
                 $id = $request->user_id;
                 $status = $request->status;
                 $data = ['status'=>$status,'reason'=>isset($request->reason) ? $request->reason : '' ];
                 $update=  User::where('id', $id)->update($data);
                 if($update){
-                    $result = array("status"=> true, "message"=>"Status updated successfully ");
+                    $result = array("status"=> true, "message"=>"User status  deactive successfully ");
                 }
                 else{
                     $result = array("status"=> false, "message"=>"not update status");
                 }
                 echo json_encode($result);
             }
-    
+
+            public function userchangestatusactive(Request $request)
+            {
+              //  dd($request->input());
+                $id = $request->id;
+                $status = $request->status;
+                $data1 = ['status'=>$status];
+               // $updated=  DB::table('users')->where('id',$id)->update($data);
+                 //User::where('id', $id)->update($data);
+                 $updated=  User::where('id', $id)->update($data1);
+                if($updated){
+                    $result = array("status"=> true, "message"=>"User status  active successfully ");
+                }
+                else{
+                    $result = array("status"=> false, "message"=>"not update status");
+                }
+                echo json_encode($result);
+            }
+
+            
+  
 }

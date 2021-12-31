@@ -243,7 +243,7 @@
 		},
 	
 	messages: {
-		name: {required: "Please enter name",},email: {required: "Please enter valid email",email: "Please enter valid email",},   
+		name: {required: "Please enter business owner name",},email: {required: "Please enter valid email",email: "Please enter valid email",},   
 		phone: {required: "Please enter Mobile Number",},
 		password: {required: "Please enter password",},
 		// specialization: {required: "Please enter specialization",},

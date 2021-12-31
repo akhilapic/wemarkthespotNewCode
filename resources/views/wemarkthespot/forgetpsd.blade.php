@@ -10,6 +10,15 @@
       <link href="{{asset('assets/css/style.css')}}" rel="stylesheet" type="text/css">
       <meta name="csrf-token" content="{{ csrf_token() }}" />
    </head>
+   <style type="text/css">
+      label.error {
+    display: inline-block;
+    width: 100%;
+    clear: both;
+    margin-top: 8px;
+    color: #db0707;
+}
+   </style>
    <body>
       <!-- header -->
       <header>
@@ -21,14 +30,14 @@
       <main class="mt-0">
       <section class="loginSection">
          <div class="container-fluid">
-            <div class="row gy-5">
+            <div class="row gy-5 align-items-center">
                <div class="col-lg-6 d-none d-lg-block">
                   <img src="{{asset('assets//images/Address-amico.png')}}">
                </div>
                <div class="col-lg-5 offset-lg-1">
                   <div class="login mt-2 mt-lg-0">
                      <div class=" text-center mb-4">
-                        <h1 class="title">Forget Password</h1>
+                        <h1 class="title">Forgot Password</h1>
                     
                         <span id="msg_error"></span>
                      </div>
@@ -73,6 +82,19 @@
       <script src="{{asset('assets/js/bootstrap.min.js')}}"></script>
       <script src="{{asset('assets/js/custom.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+
+<script>
+
+    $(document).ready(function() {
+        function disableBack() { window.history.forward() }
+
+        window.onload = disableBack();
+        window.onpageshow = function(evt) { if (evt.persisted) disableBack() }
+    });
+
+</script>
+
+
       <script>
  jQuery.validator.addMethod("emailExt", function(value, element, param) {
     return value.match(/^[a-zA-Z0-9_\.%\+\-]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$/);
@@ -84,7 +106,7 @@
         },
 
         messages: {
-        email: {required: "Please enter valid Email",email: "Please enter valid Email",},   
+        email: {required: "Please enter valid email",email: "Please enter valid email",},   
 
         },
    submitHandler: function(form) {
@@ -107,7 +129,7 @@
               $('#staticBackdrop').modal('show');
                 $("#msg").text(obj.message);
                 $("#otpbtn").attr("href",obj.url);
-            
+             $("#otpbtn").show();
 //                setTimeout(function(){ window.location.href= obj.url; }, 2000);
                 
 
@@ -117,6 +139,24 @@
              if(obj.status==false){
                if(obj.status==false)
                {
+                  if(obj.email== false)
+                  {
+                       $('#staticBackdrop').modal('show');
+                       $("#otpbtn").hide();
+                         $("#msg").text(obj.message);
+                       $("#msg_error").css({"display": "block", "color": "red"}); 
+                       setTimeout(function(){  
+                        $('#staticBackdrop').modal('hide');
+                    }, 3000);
+                           //jQuery('#msg_error').html('');
+                           //$("#otpbtn").attr("data-dismiss","modal");
+                       
+                    
+                  }
+               else
+               {
+
+               
                //   alert(obj.message);
                 $('#staticBackdrop').modal('show');
 
@@ -125,7 +165,7 @@
                 
               $("#msg_error").css({"display": "block", "color": "red"}); 
                }
-               
+               }
                else
                {
                   jQuery('#msg_error').css("display", "none");

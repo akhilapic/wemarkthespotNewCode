@@ -36,7 +36,66 @@ Route::post('/guestuser', 'App\Http\Controllers\Api\userController@guestuser');
 
 Route::post('/forgot_password_verify', 'App\Http\Controllers\Api\userController@forgetpasswordVerification');
 
+Route::post('/get_homedata', 'App\Http\Controllers\Api\userController@getquoatesdata');
 
+Route::post('/getnearby', 'App\Http\Controllers\Api\userController@getnearby');
+Route::post('/getnearby4', 'App\Http\Controllers\Api\userController@getnearby4');
+
+Route::post('/business_review', 'App\Http\Controllers\Api\userController@business_review');
+Route::get('/business_review_delete', 'App\Http\Controllers\Api\userController@business_review_delete');
+Route::post('/checkOut', 'App\Http\Controllers\Api\userController@checkOut');
+
+Route::post('/community_reviews', 'App\Http\Controllers\Api\userController@community_reviews');
+Route::post('/community_reviews1', 'App\Http\Controllers\Api\userController@community_reviews1');
+
+
+Route::post('/add_hotspots', 'App\Http\Controllers\Api\userController@add_hotspots');
+
+Route::get('/gethotspot', 'App\Http\Controllers\Api\userController@gethotspots');
+
+Route::post('/get_businessusers', 'App\Http\Controllers\Api\userController@get_businessusers');
+Route::post('/businessfav', 'App\Http\Controllers\Api\userController@BusinessFav');
+
+Route::post('/replies_community_reviews', 'App\Http\Controllers\Api\userController@replies_community_reviews');
+
+
+Route::get('/get_replies_community_reviews', 'App\Http\Controllers\Api\userController@get_replies_community_reviews');
+Route::post('/get_replies_community_reviews1', 'App\Http\Controllers\Api\userController@get_replies_community_reviews1');
+
+Route::get('/userCheckInList', 'App\Http\Controllers\Api\userController@userCheckInList');
+
+Route::post('/getbusinessFavbyuserId', 'App\Http\Controllers\Api\userController@getbusinessFav');
+
+Route::post('/addBuinessReports', 'App\Http\Controllers\Api\userController@addBuinessReports');
+
+
+Route::post('/Businesslikedislike', 'App\Http\Controllers\Api\userController@Businesslikedislike');
+
+Route::post('/Businesslikedislike2', 'App\Http\Controllers\Api\userController@Businesslikedislike2');
+
+Route::post('/Businesssearch', 'App\Http\Controllers\Api\userController@BusinessSearch');
+Route::post('/Businesssearch2', 'App\Http\Controllers\Api\userController@BusinessSearch2');//use for hotsprts data
+
+
+Route::post('/getreviewbyuserid', 'App\Http\Controllers\Api\userController@getreviewbyuserid');
+Route::post('/deletereview', 'App\Http\Controllers\Api\userController@deletereview');
+Route::post('/editReview', 'App\Http\Controllers\Api\userController@editReview');
+
+
+Route::post('/searchBybusinessNameCategoryNameSubCategoryName', 'App\Http\Controllers\Api\userController@searchBybusinessNameCategoryNameSubCategoryName');
+
+Route::get('/getAllbusiness', 'App\Http\Controllers\Api\userController@getAllbusiness');
+
+Route::get('/getfilterbusiness', 'App\Http\Controllers\Api\userController@getfilterbusiness');
+
+Route::get('/getfaq', 'App\Http\Controllers\Api\userController@getfaq');
+
+Route::post('/BusinessVisits', 'App\Http\Controllers\Api\userController@BusinessVisits');
+
+Route::post('/contactus', 'App\Http\Controllers\Api\userController@contactus');
+Route::post('/changepassword', 'App\Http\Controllers\Api\userController@changepassword');
+
+Route::get('/getabout', 'App\Http\Controllers\Api\userController@getabout');
 //-----------------------------------end-------------------------------------------------------------------
 
 Route::post('/email_verification', 'App\Http\Controllers\Api\userController@emailVerification');

@@ -17,5 +17,13 @@ class Categorys extends Model
         'name',  'short_information','image','status','detail_information','created_at','updated_at'
     ];
 
+    function user(){
+      return $this->hasMany('App\Models\User','business_category','id');
+    }
+
+    function subcategory(){
+     return $this->hasMany('App\Models\SubCategorys','category_id','id');
+   }
+
   
 }

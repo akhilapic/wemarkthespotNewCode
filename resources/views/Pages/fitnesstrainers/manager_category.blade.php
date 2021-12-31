@@ -33,13 +33,14 @@
 					</div>
 					<div class="card-body">
 						<div class="table-responsive">
+							  <div class="result"></div>
 							<table id="zero_config" class="table table-striped table-bordered">
 								<thead>
 									<tr>
 										<th>Id.</th>
 										<th>Name</th>
-										<th>short Information</th>
-										<th>image</th>
+										<th>Short Information</th>
+										<th>Image</th>
 										<th>Detail Information</th>
 										<Th>Created Date</Th>
 										<th>Action</th>
@@ -55,29 +56,45 @@
 												<span class="ml-2">{{ $user->name }}</span>
 											</a>
 										</td>
-										<td>{{ $user->short_information }}</td>
+
+										<td><textarea readonly rows="5" cols="20">{{ $user->short_information }}</textarea></td>
 										<td><img src="{{$user->image}}" width="150" height="150"/></td>
-										<td>{{$user->detail_information}}</td>
+										<td><textarea readonly rows="5" cols="20">{{$user->detail_information}}</textarea></td>
+										
 												<td>{{ $user->created_at }}</td>
 										<td>
-											<div class="table_action">
+											<div class="table_action" style="width: 103px">
 												<a href="{{url('/category-view')}}/{{$user->id}}" class="btn btn-success btn-sm list_view infoU"  data-id='"{{ $user->id }}"' data-bs-whatever="@mdo">
 													<i class="mdi mdi-eye"></i>
 												</a>  
-												<a href="{{ route('category_delete',$user->id) }}" class="btn deleteConf btn-danger btn-sm list_delete ">
+												<a href="{{ route('category_delete',$user->id) }}" class="btn  btn-danger btn-sm list_delete " onclick="return confirm('Are you sure delete this category？')">
 													<i class="mdi mdi-delete"></i>
 												</a> 
 												
 												<a style="display: " href="{{ url('category_edit',$user->id) }}" class="btn btn-info btn-sm list_edit">
 													<i class="mdi mdi-lead-pencil"></i>
 												</a> 
-												<span class="status">
+												<span class="status" style="display:none">
 													<label class="switch">
-														<input data-id="{{$user->id}}" class=" category_status switch-input" type="checkbox" data-onstyle="success" data-offstyle="danger" data-toggle="toggle" data-on="Active" data-off="InActive" {{ $user->status ? 'checked' : '' }}>
+
+														<input data-id="{{$user->id}}" class=" category_statuss switch-input" type="checkbox" data-onstyle="success" data-offstyle="danger" data-toggle="toggle" data-on="Active" data-off="InActive" {{ $user->status ? 'checked' : '' }}>
 														<span class="switch-label" data-on="Active" data-off="Deactive"></span> 
 														<span class="switch-handle"></span> 
 													</label>
-													
+												</span>
+
+													<span class="status">
+													<label class="switch">
+														@if($user->status==1)
+														<input data-id="{{$user->id}}" class="  switch-input" onchange="useractivedeactive({{$user->id}},'0');" type="checkbox" data-onstyle="success" data-offstyle="danger" data-toggle="toggle" data-on="Active" data-off="InActive"  >
+														<span class="switch-label" data-on="Active" data-off="Deactive"></span> 
+														<span class="switch-handle"></span> 
+														@else
+														<input data-id="{{$user->id}}" class="  switch-input" onchange="useractivedeactive({{$user->id}},'1');" type="checkbox" data-onstyle="success" data-offstyle="danger" data-toggle="toggle" data-on="Deactive" data-off="InActive" checked>
+														<span class="switch-label" data-on="Active" data-off="Deactive"></span> 
+														<span class="switch-handle"></span> 
+														@endif
+													</label>
 												</span>
 											</div>
 											  
@@ -124,4 +141,39 @@
 	</div>
 </div>
 
+<script type="text/javascript">
+		function useractivedeactive($id,$status){
+
+		host_url = "/development/wemarkthespot/";
+		var status =$status; //$(this).prop('checked') == true ? 1 : 0; 
+
+		var token = $("meta[name='csrf-token']").attr("content");
+		var user_id =$id; //$(this).data('id'); 
+		
+		
+		
+			$.ajax({
+				type: "POST",
+				dataType: "json",
+				url: host_url+'category_status',
+				data: {'_token':  token,'status': status, 'id': user_id},
+				success: function(data){
+				//	var obj = JSON.parse(data);
+			
+					if(data.status==true)
+					{
+						jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+data.message+"</div>");
+
+						 setTimeout(function(){
+					  jQuery('.result').html('');
+					  window.location.reload();
+				  }, 3000);
+					}
+				 
+				}
+			});
+		
+		
+	}
+</script>
 @stop

@@ -11,7 +11,7 @@
     <meta name="robots" content="noindex,nofollow">
     <title>Login</title>
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="public/assets/admin/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="public/assets/images/favicon.png">
     <!-- <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/> -->
     <!-- Custom CSS -->
     <link href="{{ asset('public/assets/admin/dist/css/style.min.css') }}" rel="stylesheet">
@@ -93,12 +93,13 @@
                                 <div class="form-group">
                                     <div class="d-flex">
                                         <div class="checkbox checkbox-info pt-0">
-                                            <input id="checkbox-signup" type="checkbox" class="material-inputs chk-col-indigo">
-                                            <label for="checkbox-signup"> Remember me </label>
+                                            <input id="checkbox-signup" type="checkbox" class="material-inputs chk-col-indigo" name="remember">
+                                            <label style="font-size: 15px;" for="checkbox-signup"> Remember me </label>
                                         </div>
-                                        <!--<div class="ms-auto">-->
-                                        <!--    <a href="javascript:void(0)" id="to-recover" class="link font-weight-medium"><i class="fa fa-lock me-1"></i> Forgot pwd?</a>-->
-                                        <!--</div>-->
+                                        
+                                            <div class="ms-auto">
+                                            <a href="{{url('forget-password')}}" id="to-recover" class="link font-weight-medium"><i class="fa fa-lock me-1"></i> Forgot password?</a>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group text-center mt-4 mb-3">
@@ -159,6 +160,17 @@
     <!-- -------------------------------------------------------------- -->
     
     <script>
+        $(function() {
+    if (window.history && window.history.pushState) {
+        window.history.pushState('', null, './');
+        $(window).on('popstate', function() {
+            // alert('Back button was pressed.');
+            document.location.href = '#';
+
+        });
+    }
+});
+        
         $(".preloader").fadeOut();
     // ==============================================================
     // Login and Recover Password

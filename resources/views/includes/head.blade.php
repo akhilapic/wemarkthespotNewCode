@@ -7,7 +7,7 @@
     <meta name="robots" content="noindex,nofollow">
     <title>Admin</title>
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{url('public/assets/admin/images/favicon.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{url('public/assets/images/favicon.png')}}">
 	<meta name="csrf-token" content="{{ csrf_token() }}" />
     <!-- Custom CSS -->
     <link href="{{ asset('assets/admin/dist/css/style.min.css') }}" rel="stylesheet">

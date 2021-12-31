@@ -2,6 +2,7 @@
 @section('content')
 
 
+
 <!-- ============================================================== -->
 <!-- Page wrapper  -->
 <!-- ============================================================== -->
@@ -73,7 +74,7 @@
                             <!-- Tabs -->
                             <div class="tab-content" id="pills-tabContent">
 							    <div class="tab-pane show active" id="previous-month" role="tabpanel">
-                                    <div class="card-body">
+                                    <div class="card-body padding_bottom">
 									
 									    <!-- Alert Append Box -->
 										<!--<div class="alert alert-danger alert-dismissible text-white border-0 fade show" role="alert">-->
@@ -92,7 +93,7 @@
                                                 </div>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="example-email" class="col-md-12">Email1</label>
+                                                <label for="example-email" class="col-md-12">Email</label>
                                                 <div class="col-md-12">
                                                     <input type="email" placeholder="Email" class="form-control form-control-line" name="email" id="example-email" value="{{\App\Models\User::where('id',Session::get('id'))->pluck('email')[0]}}" disabled>
                                                 </div>
@@ -109,9 +110,9 @@
                                             <!--        <input type="number" value="{{Session::get('phone')}}" class="form-control form-control-line">-->
                                             <!--    </div>-->
                                             <!--</div>-->
-                                            <div class="mb-3">
+                                            <div class="">
                                                 <div class="col-sm-12">
-                                                      <input type="submit"  value="Update Profile" class="btn btn-success btn_submit fa-pull-left mt-3">
+                                                      <input type="submit"  value="Update Profile" class="btn btn-success btn_submit fa-pull-left mb-4">
 
                                                 </div>
                                             </div>
@@ -144,12 +145,12 @@
                                             <div class="mb-3">
                                                 <label class="col-md-12">Confirm Password</label>
                                                 <div class="col-md-12">
-                                                    <input type="text" placeholder="**********"  name ="confirm_password" id ="confirm_password" class="form-control form-control-line">
+                                                    <input style="font-size: 15px;" type="text" placeholder="**********"  name ="confirm_password" id ="confirm_password" class="form-control form-control-line">
                                                 </div>
                                             </div>
                                             <div class="mb-3">
                                                 <div class="col-lg-12">
-                                                <input type="submit" id="admin_change_psd" value="Change Password" class="btn btn-success btn_submit fa-pull-left mt-3">
+                                                <input type="submit" id="admin_change_psd" value="Change Password" class="btn btn-success btn_submit fa-pull-left mb-4">
                                                 </div>
                                             </div>
                                         </form>

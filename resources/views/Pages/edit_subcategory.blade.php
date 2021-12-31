@@ -66,10 +66,11 @@
                         	<div class="mb-3 col-md-6">
 								<label for="username" class="control-label">Image:</label>
 
-								<input type="file" id="iamge" name="image"  class="form-control">
+								<input type="file" id="iamge" name="image"  class="form-control" accept="image/*" onchange="loadFile(event)">
                                 <input type="hidden" name="old_image" value="{{$subcategorys->image}}"/>
+                                  <img id="output" width="150" height="120" style="display:none" />
                                 @if($subcategorys->image)
-                                <img src="{{$subcategorys->image}}" width="150" height="150"/>
+                                <img src="{{$subcategorys->image}}" id="categoryimgs" width="150" height="150"/>
                                 @endif
                                 {{-- allready exit error --}}
 							<label id="image_error" class="error"></label>
@@ -92,7 +93,73 @@
     <!-- ============================================================== -->
     <!-- End Container fluid  -->
     <!-- ============================================================== -->
-
+ <script>
+  var loadFile = function(event) {
+    var output = document.getElementById('output');
+    output.src = URL.createObjectURL(event.target.files[0]);
+    output.onload = function() {
+    	$("#output").show();
+    	$("#categoryimgs").hide();
+      URL.revokeObjectURL(output.src) // free memory
+    }
+  };
+</script>
+<script type="text/javascript">
+	$("#category_id").on("change",function(){
+		category_id = $("#category_id").val();
+		if(category_id!='')
+		{
+			$("#category_id-error").hide();
+		}
+	});
+			$("#subcategory_edit1").validate({
+			rules: {
+				category_id: {required: true,},
+				name: {required: true,},
+			//	short_information: {required: true,},  
+			
+			//	detail_information: {required: true,},
+				},
+			messages: {
+				category_id:{required:"Please select sub category",},
+				name: {required: "Please enter sub category name",},
+			//	short_information: {required: "Please enter short information",},   
+			
+				//detail_information: {required: "Please enter detail information",},
+			},
+				submitHandler: function(form) {
+				   var formData= new FormData(jQuery('#subcategory_edit1')[0]);
+				jQuery.ajax({
+						url: host_url+"subcategory-update",
+						type: "post",
+						cache: false,
+						data: formData,
+						processData: false,
+						contentType: false,
+						
+						success:function(data) { 
+							var obj = JSON.parse(data);
+							if(obj.status==true){
+								jQuery('#name_error').html('');
+								jQuery('#email_error').html('');
+								jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+								setTimeout(function(){
+									jQuery('.result').html('');
+									window.location = host_url+"manage_sub_category";
+								}, 2000);
+							}
+							else
+							{
+								if(obj.status==false){
+									jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+								}
+							
+							}
+						}
+					});
+				}
+			});
+</script>
 @stop
 
 

@@ -33,14 +33,20 @@
 								<!-- Alert Append Box -->
 							<div class="result"></div>
 							</div>
-							<div class="mb-3 col-md-6">
+							<div class="mb-3 col-md-4">
 
 								<label for="Name" class="control-label" >Category Name:</label>
-								<input type="text" id="name" name="name" readonly value="{{$subcategorys[0]['name']}}" class="form-control">
+								<input type="text" id="name" name="name" readonly value="{{$subcategorys['category_name']}}" class="form-control">
 							</div>
-							<div class="mb-3 col-md-6">
+							<div class="mb-3 col-md-4">
+
+								<label for="Name" class="control-label" >Sub Category Name:</label>
+								<input type="text" id="name" name="name" readonly value="{{$subcategorys['name']}}" class="form-control">
+							</div>
+
+							<div class="mb-3 col-md-4">
 								<label for="Email" class="control-label">Short Information:</label>
-								<input type="text" id="short_information" readonly value="{{$subcategorys[0]['short_information']}}" name="short_information" class="form-control">
+								<input type="text" id="short_information" readonly value="{{$subcategorys['short_information']}}" name="short_information" class="form-control">
 								{{-- allready exit error --}}
 								<label id="short_information_error" class="error"></label>
 							</div>
@@ -48,8 +54,8 @@
                         	<div class="mb-3 col-md-6">
 								<label for="username" class="control-label">Image:</label><br>
                                 
-							    @if($subcategorys[0]['image'])
-                                    <img src="{{$subcategorys[0]['image']}}" width="150" height="120"/>
+							    @if($subcategorys['image'])
+                                    <img src="{{$subcategorys['image']}}" width="150" height="120"/>
                                 @endif
 
                                 {{-- allready exit error --}}
@@ -57,7 +63,7 @@
 							</div>
 							<div class="mb-3 col-md-6">
 								<label for="username" class="control-label">Detail Information:</label>
-								<textarea readonly class="form-control" id="detail_Information" name="detail_information">{{$subcategorys[0]['detail_information']}}</textarea>
+								<textarea readonly class="form-control" id="detail_Information" name="detail_information">{{$subcategorys['detail_information']}}</textarea>
 							{{-- allready exit error --}}
 							<label id="detail_information_error" class="error"></label>
 							</div>

@@ -15,14 +15,36 @@
     right: 15px;
     top: 48px;
 }
+label.error {
+    display: inline-block;
+    width: 100%;
+    clear: both;
+    margin-top: 8px;
+    color: #db0707;
+}
+
    </style>
+<!-- <script type="text/javascript">
+   jQuery(document).ready(function($) {
+
+  if (window.history && window.history.pushState) {
+
+    window.history.pushState('forward', null, './#forward');
+
+    $(window).on('popstate', function() {
+      alert('Back button was pressed.');
+    });
+
+  }
+});
+</script> -->
    </head>
    <body>
       <!-- header -->
       <header>
          <div class="container-fluid d-flex py-3">
-            <a class="logo" href="index.html"><img src="{{asset('assets/images/logo.svg')}}"></a>
-            <button class="backBTN ms-auto" onclick="history.go(-1); return false;"><span class="icon-close-2"></span></button>
+            <a class="logo" href="{{url('/')}}"><img src="{{asset('assets/images/logo.svg')}}"></a>
+            <button class="backBTN ms-auto" onclick="redirect()"><span class="icon-close-2"></span></button>
          </div>
       </header>
       <main class="mt-0">
@@ -61,10 +83,10 @@
                         <div class="mb-3" style="position:relative;">
                            <label for="password" class="form-label">Password</label>
                            <input type="password" class="form-control" name="password" id="Password1" placeholder="Enter Password">
-                           <span class="fa fa-eye input_icon" id="eye1" style="cursor: pointer ;color: #9f9a9a;" data-name="password"></span>
+                           <span class="fa fa-eye-slash input_icon" id="eye1" style="cursor: pointer ;color: #9f9a9a;" data-name="password"></span>
                         </div>
                         <div class="mb-2 form-check ps-0">
-                           <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                           <input type="checkbox" class="form-check-input" id="exampleCheck1" name="remember">
                            <label class="form-check-label" for="exampleCheck1">Remember Me</label>
                            <a class="forgot float-end" href="{{url('forgetpsd')}}">Forgot Password?</a>
                         </div>
@@ -98,6 +120,12 @@
       <script src="{{asset('assets/js/bootstrap.min.js')}}"></script>
       <script src="{{asset('assets/js/custom.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script type="text/javascript">
+   function redirect()
+   {
+      window.location.href = "{{url('/')}}";
+   }
+</script>
 <script>
 	$(function(){
   $("#eye1").on("click",function(){
@@ -105,14 +133,14 @@
 			type=$("input[name='"+$(this).data("name")+"']").attr("type");
 				  if(type=='password')
 					{
-						$("#eye1").removeClass("fa-eye");
-						$("#eye1").addClass("fa-eye-slash");
+						$("#eye1").removeClass("fa-eye-slash");
+						$("#eye1").addClass("fa-eye");
 						$("input[name='"+$(this).data("name")+"']").attr("type",'text');
 					}
 					else
 					{
-						$("#eye1").addClass("fa-eye");
-						$("#eye1").removeClass("fa-eye-slash");
+						$("#eye1").addClass("fa-eye-slash");
+						$("#eye1").removeClass("fa-eye");
 						$("input[name='"+$(this).data("name")+"']").attr("type",'password');
 					}
         		
@@ -147,8 +175,8 @@ rules: {
    },
 
 messages: {
-   password: {required: "Please enter Password",},
-   email: {required: "Please enter valid Email",email: "Please enter valid Email",},   
+   password: {required: "Please enter password",},
+   email: {required: "Please enter valid email",email: "Please enter valid email",},   
 
 },
    submitHandler: function(form) {
@@ -165,28 +193,31 @@ messages: {
          contentType: false,
          
          success:function(data) { 
-         var obj = JSON.parse(data);
-         if(obj.status==true){
+      //   var obj = JSON.parse(data);
+         if(data.status==true){
               $('#staticBackdrop').modal('show');
 
-                $("#msg").text(obj.message);
+                $("#msg").text(data.message);
             window.location.href= "{{route('my_account')}}";
 
          }
          else{
                //alert(obj.status);
-             if(obj.status==false){
-               if(obj.status==false)
+             if(data.status==false){
+               if(data.status==false)
                {
+                   $('#staticBackdrop').modal('show');
+
+                $("#msg").text(data.message);
                //   alert(obj.message);
             //    $('#staticBackdrop').modal('show');
 
 //                $(".msg_error").text(obj.message);
-                  jQuery('#msg_error').html('<span>'+obj.message+'</span>');
+             //     jQuery('#msg_error').html('<span>'+obj.message+'</span>');
                   //jQuery('#msg_error').html(obj.message);
             //jQuery('#msg_error').css("display", "block");
             //    jQuery('#msg_error').css({'display','block','color':'red'});
-              $("#msg_error").css({"display": "block", "color": "red"}); 
+             // $("#msg_error").css({"display": "block", "color": "red"}); 
                }
                
                else

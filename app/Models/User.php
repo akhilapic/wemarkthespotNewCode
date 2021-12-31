@@ -17,7 +17,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','username','status','email_verified_at','password','remember_token','created_at','updated_at','business_type','location'
+        'name', 'email', 'password', 'username', 'status', 'email_verified_at', 'image', 'password',
+        'remember_token', 'created_at', 'updated_at', 'business_type', 'location', 'lat', 'long', 'review'
     ];
 
     /**
@@ -37,4 +38,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    function category()
+    {
+        $this->belongsTo('App\Models\Categorys', 'id', 'business_category')->withDefault();
+    }
 }

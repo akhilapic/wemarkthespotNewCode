@@ -10,9 +10,33 @@
                <div class="col-md-4 pe-lg-5">
                   <aside>
                      <div class="BoxShade UserBox mb-4">
-                        <figure><img src="{{asset('assets/images/img-6.png')}}"></figure>
-                        <p><strong>Royal Bar</strong></p>
-                        <p class="rating">4.7 <span class="icon-star"></span></p>
+                     <figure>
+                        @if($account->business_images)   
+                        <img src="{{$account->business_images}}">
+                        @elseif($account->image)
+                        <img src="{{$account->image}}">
+                      
+                        else
+                      
+                        <img src="{{asset('assets/images/img-6.png')}}">
+                        @endif
+
+                     </figure>
+                        @if($account->business_name)  
+                     <p>{{$account->business_name}}</p>
+                     @else
+                     <p>Business Name</p>
+                     @endif
+                     @if($account->ratting)
+
+<p class="rating">@if($account->ratting)  
+                     {{$account->ratting}}
+                     @else
+                     0.0
+                     @endif <span class="icon-star"></span></p>
+@else
+<p class="rating">0.0 <span class="icon-star"></span></p>
+@endif
                         <p class="verify">Verified</p>
                      </div>
                      <div class="BoxShade">
@@ -31,57 +55,22 @@
                <div class="col-md-8">
                   <h4 class="acTitle">FAQs</h4>
                   <div class="accordion accordion-flush" id="accordionFlushExample">
-                     <div class="accordion-item">
-                       <h2 class="accordion-header" id="flush-headingOne">
-                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                           Lorem ipsum dolor sit amet?
-                         </button>
-                       </h2>
-                       <div id="flush-collapseOne" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                         <div class="accordion-body">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore mana aliqm erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</div>
-                       </div>
-                     </div>
-                     <div class="accordion-item">
-                       <h2 class="accordion-header" id="flush-headingTwo">
-                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                           Lorem ipsum dolor sit amet?
-                         </button>
-                       </h2>
-                       <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                         <div class="accordion-body">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore mana aliqm erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</div>
-                       </div>
-                     </div>
-                     <div class="accordion-item">
-                       <h2 class="accordion-header" id="flush-headingThree">
-                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                           Lorem ipsum dolor sit amet?
-                         </button>
-                       </h2>
-                       <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-                         <div class="accordion-body">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore mana aliqm erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</div>
-                       </div>
-                     </div>
-                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingFour">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
-                            Lorem ipsum dolor sit amet?
-                          </button>
-                        </h2>
-                        <div id="flush-collapseFour" class="accordion-collapse collapse" aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
-                          <div class="accordion-body">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore mana aliqm erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</div>
-                        </div>
-                      </div>
+                    @if($faq)
+                      @foreach($faq as $k=> $f)
                       <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingFive">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFour">
-                            Lorem ipsum dolor sit amet?
-                          </button>
-                        </h2>
-                        <div id="flush-collapseFive" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
-                          <div class="accordion-body">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore mana aliqm erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</div>
-                        </div>
-                      </div>
-                   </div>
+                     <h2 class="accordion-header" id="flush-headingOne{{$k}}">
+                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne{{$k}}" aria-expanded="false" aria-controls="flush-collapseOne{{$k}}">
+                           {{$f->question}}
+                         </button>
+                       </h2>
+                       <div id="flush-collapseOne{{$k}}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                         <div class="accordion-body">{{$f->answers}}</div>
+                       </div>
+                     </div>
+                     @endforeach
+                    @endif 
+                   
+                  
                   
                </div>
             </div>

@@ -1,6 +1,31 @@
 @extends('layouts.admin')
 @section('content')
+<style>
+    .btn_submit:disabled {
+    background: #d66821;
+    border-color: #d66821;
+    opacity: 1;
+}
 
+.status_change_new .dropdown.bootstrap-select.form-select{
+    border: none;
+    padding: 0px;
+    width: 150px;
+}
+.status_change_new select.form-select{
+    width: 150px;
+}
+.status_change_new button.btn.dropdown-toggle.btn-light {
+    background: #fff;
+}
+.bootstrap-select .dropdown-menu {
+    min-width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: visible !important;
+}
+</style>
 
 <!-- ============================================================== -->
 <!-- Page wrapper  -->
@@ -54,7 +79,7 @@
                                         <th><div style="width: 140px;">Specialization</div></th> -->
                                         <Th>Business Type </Th>
                                         <th>Status</th>
-                                        <th>Approved</th>
+                                        <th>Change Status</th>
                                         <th><div style="width: 140px;">Action</div></th>
                                     </tr>
                                 </thead>
@@ -84,9 +109,9 @@
                                         @elseif($item->status=='3')
                                         <td style="color:orange;">Rejected</td>
                                         @endif
-                                        <td>
+                                        <td class="status_change_new">
 
-                                            <select  class="status_change" class="form-select" data-id="{{$item->id}}" >
+                                            <select onchange="statusnewchanges(this.value,{{$item->id}})" class="form-select" data-id="{{$item->id}}" >
                                                 <option value="1" @if($item->status == "1") selected  @endif>Pending</option>
                                                 <option value="2" @if($item->status == "2") selected  @endif>Approved</option>
                                                 <option value="3" @if($item->status == "3") selected  @endif>Rejected</option>
@@ -97,10 +122,10 @@
                                                 <a href="{{ route('manage_business_view', $item->id) }}" data-id="{{ $item->id }}"  class="btn btn-success btn-sm list_view infoU"  data-bs-whatever="@mdo">
                                                     <i class="mdi mdi-eye"></i>
                                                 </a> 
-                                                <a href="{{ route('manage_business_edit', $item->id) }}" data-id="{{ $item->id }}" class="btn btn-info btn-sm list_edit"  data-bs-whatever="@mdo">
+                                                <a style="display: none" href="{{ route('manage_business_edit', $item->id) }}" data-id="{{ $item->id }}" class="btn btn-info btn-sm list_edit"  data-bs-whatever="@mdo">
                                                     <i class="mdi mdi-lead-pencil"></i>
                                                 </a> 
-                                                <a href="{{ route('manage_business_del', $item->id) }}" onclick="return confirm('Are you sure delete this user？')" class="btn btn-danger btn-sm">
+                                                <a href="{{ route('manage_business_del', $item->id) }}" onclick="return confirm('Are you sure delete this Business？')" class="btn btn-danger btn-sm">
                                                     <i class="mdi mdi-delete"></i>
                                                 </a> 
                                             </div>
@@ -147,7 +172,11 @@
 
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-light-danger text-danger font-weight-medium" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit"  id="submit"  class="btn btn-success btn_submit">Approve</button>
+                                    <button class="btn btn-success btn_submit loadingbtnap" type="button"  style="display: none" disabled>
+                                          <span class="spinner-grow spinner-grow-sm n-success" role="status" aria-hidden="true"></span>
+                                          Loading...
+                                        </button>
+                                    <button type="submit"  id="submit"  class="btn btn-success btn_submit btnapproved">Approve</button>
                                 </div>
                         </form>
                     </div>
@@ -175,7 +204,10 @@
                          
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-light-danger text-danger font-weight-medium" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit"  id="submit"  class="btn btn-success btn_submit">Ok</button>
+                                    <button class="btn btn-success btn_submit loadingbtn" type="button"   disabled>
+                                            <span class="spinner-grow spinner-grow-sm n-success" role="status" aria-hidden="true"></span>Loading..
+</button>
+                                    <button type="submit"  id="submit"  class="btn btn-success btn_submit btnokform">Ok</button>
                                 </div>
                         </form>
                     </div>
@@ -187,7 +219,66 @@
     <!-- ============================================================== -->
 
 
+<script type="text/javascript">
+    function statusnewchanges(val,id)
+    {
+        $("#reason").empty();
+           var value =  val; //$(this).val();
+            
+                //id = $(this).attr("data-id");
+                if (value == '2')
+                {
+                    //$("#passowrd").reset();
+                    $("#set_password_id").val(id);
+                    $("#b_password").modal('show');
+                }
+                else if(value=="3")
+                {
+                    $("#set_id").val(id);
+                    $("#b_reject").modal('show');
 
+                }
+                else
+                {
+                     reason =$("#reason").val();
+                    var formData = new FormData();
+                    formData.append("id", id);
+                    formData.append("status", value);
+                    formData.append("reason",reason);
+                    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+                    jQuery.ajax({
+                        url: host_url + "set_password_fitness_trainer",
+                        type: "post",
+                        cache: false,
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                                beforeSend: function(msg){
+                            $(".loadingbtn").css("display","block");
+                            $(".btnokform").hide();
+
+                            },
+                        success: function (data) {
+                            var obj = JSON.parse(data);
+                            if (obj.status == true) {
+                                jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> " + obj.message + "</div>");
+
+                                setTimeout(function () {
+                                    jQuery('.result').html('');
+                                    window.location = host_url + "manager_business";
+                                }, 3000);
+                            }
+                            else {
+                                if (obj.status == false) {
+                                    jQuery('#name_error').html(obj.message);
+                                    jQuery('#name_error').css("display", "block");
+                                }
+                            }
+                        }
+                    });
+                }
+    }
+</script>
 
 
     <script>
@@ -225,6 +316,11 @@
                         data: formData,
                         processData: false,
                         contentType: false,
+                                beforeSend: function(msg){
+        $(".loadingbtn").css("display","block");
+        $(".btnokform").hide();
+
+      },
                         success: function (data) {
                             var obj = JSON.parse(data);
                             if (obj.status == true) {
@@ -246,7 +342,7 @@
                 }
         }
         $(function (e) {
-
+ $(".loadingbtn").css("display","none");
 
             $('.filterdata').on('click', function (e) {
                 var token = $('meta[name="_token"]').attr('content');
@@ -295,8 +391,8 @@
                                 {
                                     tr += '<td style="color:orange;">Rejected</td>';
                                 }
-                                tr += '<td>';
-                                tr += '<select    class="form-select status_change" onchange="statuschange(this.value, ' + result[index].id + ')" data-id="' + result[index].id + '" >';
+                                tr += '<td class="status_change_new">';
+                                tr += '<select class="form-select" onchange="statuschange(this.value, ' + result[index].id + ')" data-id="' + result[index].id + '" >';
                                 if (result[index].status == '1' || result[index].status == '0')
                                 {
                                     tr += '<option value="1" selected >Pending</option>';
@@ -326,7 +422,7 @@
 
                                 tr += '<a href="fitness_trainer_view/' + result[index].id + '" data-id = ' + result[index].id + ' class="btn btn-success btn-sm list_view infoU"  data-bs-whatever="@mdo"  data-bs-whatever="@mdo"><i class="mdi mdi-eye"></i></a>';
 
-                                tr += '<a href="' + result[index].id + '" data-id = ' + result[index].id + ' class="btn btn-info btn-sm list_edit"  data-bs-whatever="@mdo"><i class="mdi mdi-lead-pencil"></i></a>';
+                                tr += '<a style="display:none" href="' + result[index].id + '" data-id = ' + result[index].id + ' class="btn btn-info btn-sm list_edit"  data-bs-whatever="@mdo"><i class="mdi mdi-lead-pencil"></i></a>';
 
                                 str = "'Are you sure delete this user？'";
 
@@ -375,9 +471,9 @@
                 $("#b_password").modal('show');
             });
 
-            $(".status_change").on("change", function () {
+            $(".status_changes").on("change", function () {//not used
                 var value = $(this).val();
-               
+              
                 id = $(this).attr("data-id");
                 if (value == '2')
                 {
@@ -406,6 +502,11 @@
                         data: formData,
                         processData: false,
                         contentType: false,
+                                beforeSend: function(msg){
+        $(".loadingbtn").css("display","block");
+        $(".btnokform").hide();
+
+      },
                         success: function (data) {
                             var obj = JSON.parse(data);
                             if (obj.status == true) {
@@ -428,6 +529,98 @@
             });
 
         })
+
+         //------------------set_password_form_fitness_trainer-------------------------
+$("#set_password_form_fitness_trainer").validate({
+rules: {
+    
+    password: {required: true,},
+    },
+    messages: {
+    password: {required: "Please enter password",},
+},
+    submitHandler: function(form) {
+       var formData= new FormData(jQuery('#set_password_form_fitness_trainer')[0]);
+    jQuery.ajax({
+            url: host_url+"set_password_fitness_trainer",
+            type: "post",
+            cache: false,
+            data: formData,
+            processData: false,
+            contentType: false,
+          beforeSend: function(msg){
+            $(".loadingbtnap").css("display","block");
+            $(".btnokform").hide();
+            $(".btnapproved").hide();
+        
+      },
+            success:function(data) { 
+            var obj = JSON.parse(data);
+            if(obj.status==true){
+                jQuery('#name_error').html('');
+                jQuery('#email_error').html('');
+                jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+                setTimeout(function(){
+                    jQuery('.result').html('');
+                    window.location = host_url+"manager_business";
+                }, 3000);
+            }
+            else{
+                if(obj.status==false){
+                    jQuery('#name_error').html(obj.message);
+                    jQuery('#name_error').css("display", "block");
+                }
+            }
+            }
+        });
+    }
+});
+
+        $("#rejected_request").validate({
+rules: {
+    
+    reason: {required: true,},
+    },
+    messages: {
+    reason: {required: "Please enter reason",},
+},
+    submitHandler: function(form) {
+       var formData= new FormData(jQuery('#rejected_request')[0]);
+    jQuery.ajax({
+            url: host_url+"set_password_fitness_trainer",
+            type: "post",
+            cache: false,
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend: function(msg){
+            $(".loadingbtn").css("display","block");
+            $(".btnokform").hide();
+        
+      },
+
+            success:function(data) { 
+            var obj = JSON.parse(data);
+            if(obj.status==true){
+                jQuery('#name_error').html('');
+                jQuery('#email_error').html('');
+                jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+                setTimeout(function(){
+                    jQuery('.result').html('');
+                    window.location = host_url+"manager_business";
+                }, 3000);
+            }
+            else{
+                if(obj.status==false){
+                    jQuery('#name_error').html(obj.message);
+                    jQuery('#name_error').css("display", "block");
+                }
+            }
+            }
+        });
+    }
+});
+
     </script>
 
     <style>

@@ -25,9 +25,9 @@
                 <div class="dropdown-menu animated flipInY" aria-labelledby="dropdownMenuLink">
                     <a class="dropdown-item" href="{{ url('/my_profile') }}"><i data-feather="user" class="feather-sm text-info me-1 ms-1"></i> My Profile</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{{ route('signout') }}"><i data-feather="log-out" class="feather-sm text-danger me-1 ms-1"></i> Logout</a>
+                    <a style="display:none" class="dropdown-item" href="{{ route('signout') }}"><i data-feather="log-out" class="feather-sm text-danger me-1 ms-1"></i> Logout</a>
                     <div class="dropdown-divider"></div>
-                    <div class="pl-4 p-2"><a href="{{ url('/my_profile') }}" class="btn d-block w-100 btn-info rounded-pill">View Profile</a></div>
+                    <div class="pl-4 p-2"><a href="{{ route('signout') }}" class="btn d-block w-100 btn-info rounded-pill">Logout</a></div>
                 </div>
             </div>
         </div>
@@ -36,27 +36,27 @@
         <nav class="sidebar-nav">
             <ul id="sidebarnav">
                 <li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ url('/dashboard') }}" aria-expanded="false">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link @if (Request::segment(1)=='dashboard') active @endif" href="{{ url('/dashboard') }}" aria-expanded="false">
                         <i class="mdi mdi-gauge"></i>
                         <span class="hide-menu">Dashboard</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item" style="">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ url('/user_list') }}" aria-expanded="false">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link @if (Request::segment(1)=='user-view') active  @elseif (Request::segment(1)=='user_list')  aclass   @endif" href="{{ url('/user_list') }}" aria-expanded="false">
                         <i class="mdi mdi-account"></i>
                         <span class="hide-menu">User Management</span>
                     </a>
                 </li>
 				<li class="sidebar-item" style="display: none;">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ url('/workout_plans') }}" aria-expanded="false">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link " href="{{ url('/workout_plans') }}" aria-expanded="false">
                         <i class="mdi mdi-account"></i>
                         <span class="hide-menu">Manage Workout Plans</span>
                     </a>
                 </li>
-                <li class="sidebar-item" style="">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ url('/manager_business') }}" aria-expanded="false">
-                        <i class="mdi mdi-account"></i>
+                <li class="sidebar-item @if (Request::segment(1)=='manager_business') active  @elseif (Request::segment(1)=='manage_business_view')  aclass   @endif" style="">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link @if (Request::segment(1)=='manager_business') active  @elseif (Request::segment(1)=='manage_business_view')  active   @endif" href="{{ url('/manager_business') }}" aria-expanded="false">
+                        <i style="font-size: 17px; margin-right:5px;" class="fas fa-tasks"></i>
                         <span class="hide-menu">Business Management</span>
                     </a>
                 </li>
@@ -85,16 +85,22 @@
 
                 <li class="sidebar-item" style="">
                     <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
-                        <i class="mdi mdi-format-list-bulleted"></i>
+                        <i style="margin-right: 5px;" class="mdi mdi-format-list-bulleted"></i>
                         <span class="hide-menu">Category Management</span>
                     </a>
                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item">
-                            <a href="{{ url('/manager_category') }}" class="sidebar-link">
+                        <li class="sidebar-item ">
+                               
+                            <a href="{{ url('/manager_category') }}" class="sidebar-link @if (Request::segment(1)=='manager_category') aclass  @elseif (Request::segment(1)=='category-view')  aclass @elseif (Request::segment(1)=='category_edit')  aclass  @endif">
+                  
                                 <i class="mdi mdi-adjust"></i>
-                                <span class="hide-menu">Category</span>
+                                <span class="hide-menu">Category  </span>
                             </a>
-                             <a href="{{ url('/manage_sub_category') }}" class="sidebar-link">
+                    
+
+                            
+                             <a href="{{ url('/manage_sub_category') }}" class="sidebar-link @if (Request::segment(1)=='manage_sub_category') aclass @elseif (Request::segment(1)=='subcategory-view') aclass @elseif (Request::segment(1)=='subcategory_edit') aclass @endif">
+                     
                                 <i class="mdi mdi-adjust"></i>
                                 <span class="hide-menu">Sub Category</span>
                             </a>
@@ -102,10 +108,78 @@
                     </ul>
                 </li>
 
-                <li class="sidebar-item" style="display:none">
+                <li class="sidebar-item" style="display:">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ url('/business_report') }}" aria-expanded="false">
+                        <!-- <i class="mdi mdi-email"></i> -->
+                        <i style="font-size: 15px; margin-right: 7px;" class="fas fa-quote-right"></i>
+                        <span class="hide-menu">Flagged Reviews</span>
+                    </a>
+                </li>
+
+                 <li class="sidebar-item" style="display:none">
+                    <a class="sidebar-link has-arrow waves-effect waves-dark " href="{{ url('/business_report') }}" aria-expanded="false">
+                        <i style="margin-right: 5px;" class="mdi mdi-email"></i>
+                        <span class="hide-menu">Flagged Reviews</span>
+                    </a>
+                    <ul aria-expanded="false" class="collapse first-level" style="display: none;">
+                        <li class="sidebar-item">
+                            <a href="{{ url('/business_report') }}" class="sidebar-link aclass">
+                                <i class="mdi mdi-adjust"></i>
+                                <span class="hide-menu">Manage Reported Reviews</span>
+                            </a>
+                             <a style="display:none" href="{{ url('/') }}" class="sidebar-link">
+                                <i class="mdi mdi-adjust"></i>
+                                <span class="hide-menu">Sub Category</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                   <li class="sidebar-item" style="">
+                    <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
+                        <!-- <i class="mdi mdi-format-list-bulleted"></i> -->
+                        <i style="font-size: 16px; margin-right: 7px;" class="fas fa-star"></i>
+                        <span class="hide-menu">Review and Rating Management</span>
+                    </a>
+                    <ul aria-expanded="false" class="collapse first-level">
+                        <li class="sidebar-item">
+                            <a href="{{ url('/ReviewandRattingManagement') }}" class="sidebar-link">
+                                <i class="mdi mdi-adjust"></i>
+                                <span class="hide-menu">Manage Reviews</span>
+                            </a>
+                            
+                        </li>
+                    </ul>
+                </li>
+                    <li class="sidebar-item" style="display:">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ url('/quoates_managements') }}" aria-expanded="false">
+                        <!-- <i class="mdi mdi-email"></i> -->
+                        <i style="font-size: 15px; margin-right: 7px;" class="fas fa-quote-right"></i>
+                        <span class="hide-menu">Quotes Managements</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item" style="display:">
                     <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ url('/contact') }}" aria-expanded="false">
                         <i class="mdi mdi-email"></i>
                         <span class="hide-menu">Contact Us</span>
+                    </a>
+                </li>
+                <li class="sidebar-item  " style="display:block">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link " href="{{url('admin_subscriptions')}}" aria-expanded="false">
+                        <i class="mdi mdi-cart-outline"></i>
+                        <span class="hide-menu">Subscriptions</span>
+                    </a>
+                </li>
+                <li class="sidebar-item" style="display:">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ url('/manage_aboutus') }}" aria-expanded="false">
+                        <i class="mdi mdi-email"></i>
+                        <span class="hide-menu">About Us</span>
+                    </a>
+                </li>
+                <li class="sidebar-item" style="display:">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ url('/faq') }}" aria-expanded="false">
+                        <i class="mdi mdi-email"></i>
+                        <span class="hide-menu">FAQ</span>
                     </a>
                 </li>
 
@@ -180,3 +254,15 @@
 <!-- End Left Sidebar - style you can find in sidebar.scss  -->
 <!-- ============================================================== -->
 <!-- ============================================================== -->
+
+<style>
+.sidebar-nav ul .sidebar-item .sidebar-link.active {
+    color: #607d8b !important;
+    opacity: 1;
+    font-weight: normal;
+}
+.sidebar-nav ul .sidebar-item .sidebar-link.active.aclass {
+    color: #000 !important;
+    font-weight: 500 !important;
+}
+</style>

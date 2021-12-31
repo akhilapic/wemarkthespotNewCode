@@ -46,9 +46,10 @@
 						
                         	<div class="mb-3 col-md-6">
 								<label for="username" class="control-label">Image:</label>
-								<input type="file" id="iamge" name="image"  class="form-control">
+								<input type="file" id="iamge" name="image"  class="form-control" accept="image/*" onchange="loadFile(event)">
 							{{-- allready exit error --}}
 							<label id="image_error" class="error"></label>
+							<img id="output" width="150" height="120" style="display:none;" />
 							</div>
 							<div class="mb-3 col-md-6">
 								<label for="username" class="control-label">Detail Information:</label>
@@ -58,7 +59,7 @@
 							</div>
 						</div>
 						<a type="button" href="{{ url('/manager_category') }}"class="btn btn-dark fa-pull-left mt-3">Back</a>
-						<input type="submit" id="submit" value="Add" class="btn btn-success btn_submit fa-pull-right mt-3">
+						<input type="submit" id="submit" value="Save" class="btn btn-success btn_submit fa-pull-right mt-3">
 					</form>
 				</div>
 			</div>
@@ -68,7 +69,68 @@
     <!-- ============================================================== -->
     <!-- End Container fluid  -->
     <!-- ============================================================== -->
+    <script>
+  var loadFile = function(event) {
+    var output = document.getElementById('output');
+    output.src = URL.createObjectURL(event.target.files[0]);
+    output.onload = function() {
+    	if(output.src!='')
+    	{
+    		$("#output").removeAttr("style");
+    URL.revokeObjectURL(output.src) // free memory		
+    	}
+      
+    }
+  };
+</script>
 
+<script>
+	$("#category_add1").validate({
+rules: {
+	name: {required: true,},
+	//short_information: {required: true,},  
+	image: {required: true},
+	//detail_information: {required: true,},
+	},
+messages: {
+	name: {required: "Please enter category",},
+	//short_information: {required: "Please enter short information",},   
+	image: {required: "Please select image",},
+	//detail_information: {required: "Please enter detail information",},
+},
+	submitHandler: function(form) {
+	   var formData= new FormData(jQuery('#category_add1')[0]);
+	  host_url = "/development/wemarkthespot/";
+	jQuery.ajax({
+			url: "category-data",
+			type: "post",
+			cache: false,
+			data: formData,
+			processData: false,
+			contentType: false,
+			
+			success:function(data) { 
+			var obj = JSON.parse(data);
+			if(obj.status==true){
+				jQuery('#name_error').html('');
+				jQuery('#email_error').html('');
+				jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+				setTimeout(function(){
+					jQuery('.result').html('');
+					window.location = host_url+"manager_category";
+				}, 2000);
+			}
+			else{
+				if(obj.status==false){
+					jQuery('.result').html("<div class='alert alert-success alert-dismissible text-white border-0 fade show' role='alert'><button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button><strong>Success - </strong> "+obj.message+"</div>");
+				}
+				
+			}
+			}
+		});
+	}
+});
+</script>
 @stop
 
 

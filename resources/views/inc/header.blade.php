@@ -3,13 +3,18 @@
    <head>
       <meta charset="UTF-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <link rel="shortcut icon" href="{{asset('/assets/images/favicon.png')}}" type="image/x-icon">
+     
+       <link rel="shortcut icon" href="{{asset('assets/images/favicon.png')}}" type="image/x-icon">
       <link rel="icon" href="{{asset('assets/images/favicon.png')}}" type="image/x-icon">
+     
+
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <title> Spot </title>
       <meta name="csrf-token" content="{{ csrf_token() }}" />
       <link href="{{asset('assets/css/style.css')}}" rel="stylesheet" type="text/css">
+      <link href="{{asset('assets/css/calendar.min.css')}}" rel="stylesheet" type="text/css">
    </head>
+
    <body>
   
       <!-- header -->
@@ -18,7 +23,7 @@
          <nav class="navbar loginNav navbar-expand-xl navbar-light">
          <div class="container-fluid">
             <a class="navbar-brand" href="{{url('/')}}"><img src="{{asset('assets/images/logo.svg')}}"></a>
-            <a href="login.html" class="btn btn-primary d-xl-none ms-auto me-2 me-lg-5">Sign In / Sign Up</a>
+            <a href="{{url('/signin')}}" class="btn btn-primary d-xl-none ms-auto me-2 me-lg-5">Sign In / Sign Up</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>

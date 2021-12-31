@@ -16,6 +16,16 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP; 
 use PHPMailer\PHPMailer\Exception;
 use Validator;
+use App\Models\Quoates;
+use App\Models\BusinessReviews;
+use App\Models\BuinessReports;
+use App\Models\Contactus;
+use App\Models\Hotspots;
+use App\Models\Businessreviewlikedislike;
+use App\Models\Faqs;
+use App\Models\Aboutus;
+use App\Models\Subscriptions;
+use App\Models\Payments;
 
 class FitnessTrainerController extends Controller
 {
@@ -25,7 +35,10 @@ class FitnessTrainerController extends Controller
         $data['active']="beaTrainer";
         return view('BeaTrainer',$data);
     }
-
+  public function add_quotes() { // create category
+      return view('Pages.add_quotes');
+   }
+   
     public function getdata()
     {
       $fitnesstrainer  =  User::where("role",99)->orderBy('id', 'DESC')->get();
@@ -34,12 +47,15 @@ class FitnessTrainerController extends Controller
     public function getdatacategory()
     {
          $categorys  =  Categorys::orderBy('id', 'DESC')->get();
-     
+//    dd($categorys);
+
      return view('Pages.fitnesstrainers.manager_category',compact('categorys'));   
     }
     public function create() { // create category
       return view('Pages.add_category');
    }
+
+
    public function categorydata(Request $request)
    {
     //dd($request->input());
@@ -263,7 +279,9 @@ public function fitness_trainer_data(Request $request)
             echo json_encode($result);
         }
     }
- public function set_password_fitness_trainer(Request $request)
+
+
+public function set_password_fitness_trainer(Request $request)
     {
          $fitnesstrainer  =  new User();
   // dd($request->input());
@@ -278,7 +296,7 @@ public function fitness_trainer_data(Request $request)
                 {
                     $data['status'] =2;
                     $subject="Your Request";
-                    $message="Your Request Approved By Admin .";
+                    $message="Your registration on We Mark the Spot platform has been Approved by Admin .";
                     $this->sendMail($userdata->email,$subject,$message);
                 }
                 else
@@ -296,7 +314,18 @@ public function fitness_trainer_data(Request $request)
                 $data['updated_at'] = date("Y-m-d h:i:s");
                 $update = $fitnesstrainer->where('id',$id) ->update($data);
                 if($update){
-                        $result=array('status'=>true,'message'=> 'Your Request Approved Successfully');
+                    if($request->status==2)
+                    {
+                        $result=array('status'=>true,'message'=> 'Status changed to Approved.');
+                    }
+                    else if($request->status==3){
+                        $result=array('status'=>true,'message'=> 'Status changed to Rejected.');
+                    }
+                    else
+                    {
+                        $result=array('status'=>true,'message'=> 'Status changed to Pending.');
+                    }
+                     //   $result=array('status'=>true,'message'=> 'Your Request Approved Successfully');
                     }
                 }
                 else{
@@ -344,7 +373,7 @@ public function fitness_trainer_data(Request $request)
                 }
             }
            $FitnessTrainers->whereIn("id",explode(",",$ids))->delete();
-             return response()->json(['success'=>"Fitness Trainer Deleted successfully."]);
+             return response()->json(['success'=>"Business data successfully deleted."]);
           }
     }
 
@@ -363,13 +392,59 @@ public function fitness_trainer_data(Request $request)
         $Categorys->where("id",$id)->delete();
         return redirect('/manager_category');
     }
+    public function  manage_business_del(Request $request,$id){ 
+        
+      $Categorys = new User();
+         $getdata = $Categorys->select("image")->where("id",$id)->first();
+        // dd($getdata);
+            if(!is_null($getdata->image))
+            {
+                if(file_exists(public_path('images/'.$getdata->image)))
+                {
+                     unlink(public_path('images/'.$getdata->image));
+                }
+            }
+        $Categorys->where("id",$id)->delete();
+        return redirect('/manager_business');
+    }
 
     public function fitness_trainer_view(Request $request,$id)
     {
           $fitnesstrainer  =  user::where("id",$id)->first();
-  //  dd($fitnesstrainer);
+          $hotspots = Hotspots::join("users","users.id","=","hotspots.user_id")
+          ->where('hotspots.user_id',$id)->select(
+              "users.name",
+              "users.image",
+              "hotspots.*",
+          )
+          ->get();
 
-      return view('Pages.fitnesstrainers.fitness_trainer_view', compact('fitnesstrainer'));
+
+        $category = Categorys::where("id",$fitnesstrainer->business_category)->first();
+          $subcategory = SubCategorys::where("id",$fitnesstrainer->business_sub_category)->first();
+          
+            $fitnesstrainer->category_name = isset($category->name)? $category->name : '';
+            $fitnesstrainer->subcategory_name = isset($subcategory->name)? $subcategory->name : '';
+         //   dd($fitnesstrainer);
+
+            $reviewratting = BusinessReviews::join('users',"users.id","=","business_reviews.user_id")
+            ->where("business_reviews.user_id",$id)
+            ->select("business_reviews.*",
+            "users.image",
+            "users.name",
+            "users.business_name as business_name",
+            "users.business_images")
+            ->orderby('id',"desc")
+            ->get();
+
+            foreach($reviewratting as $i=> $review)
+            {
+                $reviewratting[$i]->overallratings =BusinessReviews::where('business_id',$review->business_id)->avg('ratting');
+            }
+         //   dd($reviewratting);
+        $subscriptions =Payments::where('user_id',$id)->get();
+
+      return view('Pages.fitnesstrainers.fitness_trainer_view', compact('fitnesstrainer','hotspots','reviewratting','subscriptions'));
     }
 
     public function firness_trainer_update(Request $request)
@@ -646,13 +721,13 @@ public function fitness_trainer_data(Request $request)
                 $mail->Port=587;
                 $mail->SMTPSecure="tls";
                 $mail->SMTPAuth=true;
-                $mail->Username="raviappic@gmail.com";
-                $mail->Password="audnjvohywazsdqo";
+                $mail->Username= "wemarkspot@gmail.com"; //"raviappic@gmail.com";
+            $mail->Password="dwspcijqkcgagrzl";//"audnjvohywazsdqo";
                 $mail->addAddress($email,"User Name");
                 $mail->Subject=$stubject;
                 $mail->isHTML();
                 $mail->Body=$message;
-                $mail->setFrom("raviappic@gmail.com");
+                $mail->setFrom("wemarkspot@gmail.com");
                 $mail->FromName="Wemark The Spot";
                 
                 if($mail->send())
@@ -866,17 +941,21 @@ public function fitness_trainer_data(Request $request)
 
     public function category_status(Request $request)
     {
-        
+   
+
         $id = $request->id;
         $status = $request->status;
         $data = ['status'=>$status];
+
         $update =  Categorys::where('id',$id)->update($data);
         if($update){
-            $result = array("status"=> true, "message"=>"update status");
+
+            $result = array("status"=> true, "message"=>"status  updated successfully");
         }
         else{
-            $result = array("status"=> false, "message"=>"not update status");
+            $result = array("status"=> false, "message"=>"not updated status");
         }
+         echo json_encode($result);
     }
 
     public function edit($id)
@@ -955,8 +1034,9 @@ public function fitness_trainer_data(Request $request)
     {
         if($request->input())
         {
+
             $name = $request->name;
-            $res =SubCategorys::where('name',$name)->first();
+            $res =SubCategorys::where('name',$name)->where('category_id',$request->category_id)->first();
         
             $image_url=url('public/images/userimage.png');
             
@@ -1001,8 +1081,13 @@ public function fitness_trainer_data(Request $request)
     {
 //        $subcategorys = SubCategorys::where('id', $id)->first();
 
-        $subcategorys = SubCategorys::join('categorys', 'categorys.id', '=', 'sub_categorys.category_id')
-              ->get(['sub_categorys.*', 'categorys.name as category_name'])->where('id',$id);
+        // $subcategorys = SubCategorys::join('categorys', 'categorys.id', '=', 'sub_categorys.category_id')
+        //       ->get(['sub_categorys.*', 'categorys.name as category_name'])->where('id',$id);
+    
+        $subcategorys = SubCategorys::where('id',$id)->first();
+         $categorys = Categorys::where('id',$subcategorys->category_id)->first();
+        $subcategorys->category_name = $categorys->name;
+       // dd($subcategorys);
     
         return view('Pages.subcategory_view',compact('subcategorys'));
     }
@@ -1093,18 +1178,19 @@ public function fitness_trainer_data(Request $request)
         $data = ['status'=>$status];
         $update =  SubCategorys::where('id',$id)->update($data);
         if($update){
-            $result = array("status"=> true, "message"=>"update status");
+            $result = array("status"=> true, "message"=>"status  updated successfully");
         }
         else{
-            $result = array("status"=> false, "message"=>"not update status");
+            $result = array("status"=> false, "message"=>"not status  updated successfully");
         }
         echo json_encode($result);
     }
     
     public function sub_category_by_category_id(Request $request)
     {
+        $where =array('status'=>0,'category_id'=>$request->category_id);
 
-        $category =  SubCategorys::where('category_id',$request->category_id)->get();
+        $category =  SubCategorys::where($where)->get();
     //    dd($category);
         if($category){
             $result = array("status"=> true, "message"=>"update status",'data'=>$category);
@@ -1119,4 +1205,536 @@ public function fitness_trainer_data(Request $request)
     // {
     //     dd($request->input());
     // }
+
+      public function quoates_managements()
+    {
+        $quoates  =  Quoates::orderBy('id', 'DESC')->get();
+        if(!empty($quoates))
+        {
+            foreach($quoates as $q)
+            {
+                $target_file=$q->image;
+                  // Select file type
+                $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+                 // Valid file extensions
+                $extensions_arr = array("jpg","jpeg","png","gif");
+                if( in_array($imageFileType,$extensions_arr) ){
+                    $q->imagevideocheck=1;//image
+                }
+                else
+                {
+                    $q->imagevideocheck=0;//video
+                }
+               
+            }   
+        }
+    
+        return view('Pages.fitnesstrainers.quoates_managements',compact('quoates')); 
+    }
+
+     public function quoteview($id)
+    {
+        $quoates  =  Quoates::where('id', $id)->first();
+          $target_file=$quoates->image;
+                  // Select file type
+                $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+                 // Valid file extensions
+                $extensions_arr = array("jpg","jpeg","png","gif");
+                if( in_array($imageFileType,$extensions_arr) ){
+                    $quoates->imagevideocheck=1;//image
+                }
+                else
+                {
+                    $quoates->imagevideocheck=0;//video
+                }
+
+        return view('Pages.quote_view',compact('quoates')); 
+    }
+    public function quote_edit($id)
+    {
+        $quoates  =  Quoates::where('id', $id)->first();
+        // dd($quoates);
+        // exit;
+          $target_file=$quoates->image;
+                  // Select file type
+                $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+                 // Valid file extensions
+                $extensions_arr = array("jpg","jpeg","png","gif");
+                if( in_array($imageFileType,$extensions_arr) ){
+                    $quoates->imagevideocheck=1;//image
+                }
+                else
+                {
+                    $quoates->imagevideocheck=0;//video
+                }
+
+        return view('Pages.edit_quote',compact('quoates')); 
+    }
+    public function quotes_edit(Request $request)
+    {
+       if(!empty($request->id))
+        {
+               $categorysData = Quoates::where('id', $request->id)->first();
+                $fileimage="";
+                $image_url='';
+                if($request->hasfile('image'))
+                {
+                    $old_image = $request->old_image;
+                    $file_image=$request->file('image');
+                    $fileimage=md5(date("Y-m-d h:i:s", time())).".".$file_image->getClientOriginalExtension();
+                    $destination=public_path("images");
+                    $file_image->move($destination,$fileimage);
+                    $image_url=url('public/images').'/'.$fileimage;
+
+                    if(!is_null($old_image))
+                    {
+                        if(file_exists(public_path('images/'.$old_image)))
+                        {
+                             unlink(public_path('images/'.$old_image));
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    $image_url= $categorysData->image;
+                }
+         
+                $updateData = array(
+                'name'=>isset($request->name)? $request->name : $categorysData->name,
+                'short_information'=>isset($request->short_information)? $request->short_information : $categorysData->short_information,
+                'detail_information'=>isset($request->detail_information)? $request->detail_information : $categorysData->detail_information,
+                    'image'=>$image_url,
+                    'updated_at'=>date("Y-m-d h:i:s", time())
+                );
+                $updateRecord = Quoates::where('id',$categorysData->id)->update($updateData);
+                if($updateRecord){
+                    $result = array('status'=> true, 'message'=>'Quoates Update  successfully.');
+                }
+                else{
+                $result = array('status'=> false, 'message'=>'Quoates Update  Failed.');
+                }
+        }
+        else
+        {
+             $result = array('status'=> false, 'message'=>'No Record Found');
+        }
+         echo json_encode($result); 
+    }
+    public function quotesdata(Request $request)
+    {
+      //  dd($request->input());
+          if($request->input())
+            {
+            $image_url=url('public/images/userimage.png');
+            $Validation = Validator::make($request->all(),[
+                   'name' => 'unique:quoates_managements',
+            ]);
+            if($Validation->fails())
+            {
+                  $result=array('status'=>false,'message'=> 'Quoates name Already exists.' ,'error'=>$Validation->errors());
+            }
+            else
+            {
+                $fileimage="";
+                $image_url='';
+                if($request->hasfile('image'))
+               {
+                 $file_image=$request->file('image');
+                 $fileimage=md5(date("Y-m-d h:i:s", time())).".".$file_image->getClientOriginalExtension();
+                 $destination=public_path("images");
+                 $file_image->move($destination,$fileimage);
+                 $image_url=url('public/images').'/'.$fileimage;
+               }
+               else
+               {
+                 $image_url= $usreData->image;
+               }
+                $date = date("Y-m-d h:i:s", time());
+                $detail_Information = $request->detail_information;
+
+                $data = ['name'=>$request->name,'short_information'=>$request->short_information,'detail_information'=>$detail_Information,'image'=>$image_url,'updated_at'=>date("Y-m-d h:i:s", time()),'created_at'=>date("Y-m-d h:i:s", time())];
+            
+                    $insertRecord=    Quoates::create($data);
+                    if($insertRecord){
+                        $result = array('status'=> true, 'message'=>'Quoates Added  successfully.');
+                   }
+                   else{
+                        $result = array('status'=> false, 'message'=>'Quoates added  Failed.');
+                   }
+            }
+            echo json_encode($result);
+        }
+    }
+
+    public function business_report()
+    {
+        $buinessReports = BuinessReports::join('users', 'users.id', '=', 'business_reports.user_id')
+            ->join('business_reviews','business_reviews.id',"=","business_reports.review_id")
+            ->join('users as business_user','business_user.id',"=","business_reports.business_id")
+            ->get(
+                    [   'business_reports.*',
+                        'users.name as user_name',
+                        'users.image as user_image',
+                        'business_reviews.review as comment',
+                        'business_reviews.created_at as post_date', 
+                        'business_reviews.image as business_reviews_image',
+                        'business_reviews.ratting as business_reviews_ratting',
+                        'business_user.name as business_username',
+                        'business_user.id as business_user_id',
+                        'business_reports.created_at as business_reports_created_date'
+                    ]
+                    );
+        return view('Pages.fitnesstrainers.manage_business_report',compact('buinessReports'));
+    }
+
+
+    public function report_status(Request $request)
+    {
+        if($request->all())
+        {
+           // dd($request->all());
+            $business_report_id  =$request->business_report_id;
+            $business_id  =$request->business_id;
+            $user_id  =$request->user_id;
+            $review_id = $request->review_id;
+            $report_status_value = $request->report_status_value;
+           
+            if($report_status_value==1)//send mail
+            {
+                $userData = User::where('id',$user_id)->first();
+              //  dd($userData->email);
+                $subject ="Report Review";
+                $message = "Not Good Comment";
+                
+                if($this->sendMail($userData->email,$subject,$message)){
+                    BuinessReports::where('id',$business_report_id)->update(array('report_status'=>1));
+                        $result=array('status' => true,'message' =>"Mail Send");
+                    }
+            }
+            else if($report_status_value==2)// remove comment
+            {
+                  BuinessReports::where('id',$business_report_id)->update(array('report_status'=>2));
+                  BusinessReviews::where('id',$review_id)->update(array('status'=>2));
+                  $result=array('status' => true,'message' =>"Mail Send and Remove Comment");
+                
+            }
+            echo json_encode($result);
+        }
+    }
+
+    public function ReviewandRattingManagement(Request $request)
+    {
+         $buinessReports = User::join('business_reviews', 'business_reviews.user_id', '=', 'users.id')
+          ->join('users as business_user','business_user.id',"=","business_reviews.business_id")
+               ->orderBy('users.id', 'desc')
+                ->get(
+                        [
+                        'users.id as user_id',
+                        'users.name as user_name',
+                        'users.image as user_image', 
+                        'business_reviews.ratting',
+                        'business_reviews.status',
+                        'business_reviews.business_id as business_id',
+                        'business_reviews.id as business_reviews_id',
+                        'business_reviews.review', 
+                        'business_reviews.image as business_review_image',
+                        'business_user.name as business_owner_name',
+                        'business_user.business_name as business_name',
+                        'business_user.image as business_owner_image',
+                        'business_user.business_images as business_image',
+                        'business_reviews.created_at as post_date'
+                    ]
+                );
+             //   dd($usreData);
+
+                foreach($buinessReports  as $b)
+                {
+                    $business_avg=   BusinessReviews::where('business_id',$b->business_id)->avg('ratting');
+                   
+                    $target_file=$b->business_review_image;
+                    // Select file type
+                  $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+                   // Valid file extensions
+                  $extensions_arr = array("jpg","jpeg","png","gif");
+                  if( in_array($imageFileType,$extensions_arr) ){
+                      $b->imagevideocheck=1;//image
+                  }
+                  else
+                  {
+                      $b->imagevideocheck=0;//video
+                  }
+
+                    $b->overall_rating_of_business =number_format($business_avg,2);
+                }    
+          //   dd($buinessReports);
+                 return view('Pages.fitnesstrainers.management_review_ratting',compact('buinessReports'));
+                
+
+    }
+
+    public function business_review__remove(Request $request)
+    {
+        if($request->all())
+        {
+            $business_id  =$request->business_id;
+            $user_id  =$request->user_id;
+            $review_id = $request->review_id;
+
+             $response = BusinessReviews::where(['id'=>$review_id,'user_id'=>$user_id,'business_id'=>$business_id])->update(array('status'=>2));
+              if($response)
+              {
+                $result=array('status' => true,'message' =>"Ratting And Review Remove Successfully");
+              }
+              else
+              {
+                $result=array('status' => true,'message' =>"Ratting And Review Remove Failed");
+              }
+              echo json_encode($result); 
+        }
+
+    }
+    
+    public function getcontact()
+    {
+        $contactus = Contactus::orderBy('id')->get();
+        return view('Pages.fitnesstrainers.manager_contactus',compact('contactus'));   
+    }
+    
+    public function contact_status(Request $request)
+    {
+        $id = $request->id;
+        $status = $request->status;
+        $data = ['status'=>$status];
+        $update =  Contactus::where('id',$id)->update($data);
+        if($update){
+            $result = array("status"=> true, "message"=>"Status  change successfully");
+        }
+        else{
+            $result = array("status"=> false, "message"=>"not updated status");
+        }
+         echo json_encode($result);
+    }
+
+    public function likedislikeweb(Request $request)
+    {
+        $Validation = Validator::make($request->all(), [
+            'business_id' => 'required',
+            'businessreview_id' => 'required',
+            'likedislike' => 'required',
+        ]);
+
+
+        if ($Validation->fails()) {
+            $result = array('status' => false, 'message' => 'validate Failed.', 'error' => $Validation->errors());
+        } else {
+     $user_id = $request->session()->get('id');
+
+            $checkResult = Businessreviewlikedislike::where(array('user_id' => $user_id, 'business_id' => $request->business_id, 'businessreview_id' => $request->businessreview_id))->count();
+            if ($checkResult > 0) {
+                $data =  Businessreviewlikedislike::where(array('user_id' => $user_id, 'business_id' => $request->business_id, 'businessreview_id' => $request->businessreview_id))->update(array('likedislike' => $request->likedislike));
+            } else {
+                $data = Businessreviewlikedislike::create(array('user_id' => $user_id, 'business_id' => $request->business_id, 'businessreview_id' => $request->businessreview_id, 'likedislike' => $request->likedislike));
+            }
+            if ($data) {
+                $result  = array("status" => true, "message" => 'Like dislike Added Successfully');
+            } else {
+                $result  = array("status" => False, "message" => 'Like dislike  Added Failed');
+            }
+        }
+        echo json_encode($result);
+    }
+
+    public function getfaq()
+    {
+      $faq  =  Faqs::orderBy('id', 'DESC')->get();
+    
+      return view('Pages.fitnesstrainers.faq', compact('faq'));
+    }
+
+    public function add_Faq() { // create add_Faq
+        return view('Pages.add_Faq');
+     }
+
+     public function Faq_data(Request $request)
+     {
+        if($request->input())
+        {
+          
+            $Validation = Validator::make($request->all(),[
+                   'question' => 'required',
+                   'answers'=>'required',
+            ]);
+            if($Validation->fails())
+            {
+                  $result=array('status'=>false,'message'=> 'Please enter question or answers.' ,'error'=>$Validation->errors());
+            }
+            else
+            {
+                $date = date("Y-m-d h:i:s", time());
+                $data = ['answers'=>$request->answers,'question'=>$request->question,'updated_at'=>date("Y-m-d h:i:s", time()),'created_at'=>date("Y-m-d h:i:s", time())];
+                $insertRecord=    Faqs::create($data);
+                if($insertRecord){
+                    $result = array('status'=> true, 'message'=>'Faq Added  successfully.');
+                   }
+                   else
+                   {
+                    $result = array('status'=> false, 'message'=>'Faq Added  Failed.');
+                   }
+            }
+            echo json_encode($result);
+        }
+     }
+
+     public function faq_edit($id)
+     {
+        $faq =  Faqs::where('id',$id)->first();
+        if(!empty($faq))
+        {
+        //   dd($faq);
+            return view('Pages.edit_faq',compact('faq'));
+        }
+     }
+
+     public function Faq_update(Request $request)
+     {
+        $id = $request->id;
+        $result = Faqs::where('id',$id)->first();
+        
+        $updateArray = array('question'=>isset($request->question) ?$request->question: $result->question,
+                            'answers'=>isset($request->answers) ?$request->answers: $result->answers
+                        );
+  
+     
+        $update =  Faqs::where('id',$id)->update($updateArray);
+        if($update){
+
+            $result = array("status"=> true, "message"=>"Faq  updated successfully");
+        }
+        else{
+            $result = array("status"=> false, "message"=>"not updated Faq");
+        }
+         echo json_encode($result);
+     }
+
+     public function Faq_status(Request $request)
+     {
+        $id = $request->id;
+        $status = $request->status;
+        $data = ['status'=>$status];
+ 
+        $update =  Faqs::where('id',$id)->update($data);
+        if($update){
+
+            $result = array("status"=> true, "message"=>"status  updated successfully");
+        }
+        else{
+            $result = array("status"=> false, "message"=>"not updated status");
+        }
+         echo json_encode($result);
+     }
+     public function Faq_delete($id)
+     {
+        Faqs::where("id",$id)->delete();
+        return redirect('/faq');
+     }
+
+     public function manage_aboutus()
+     {
+         $aboutus = Aboutus::first();
+    
+         return view('Pages.Aboutus',compact('aboutus'));
+        
+       
+     }
+
+     public function aboutdata(Request $request)
+     {
+        if($request->input())
+        {
+          
+            $Validation = Validator::make($request->all(),[
+                   'description' => 'required',
+            ]);
+            if($Validation->fails())
+            {
+                  $result=array('status'=>false,'message'=> 'Please enter description' ,'error'=>$Validation->errors());
+            }
+            else
+            {
+               // dd($request);
+                $id = $request->id;
+                if(isset($id))
+                {
+                    $date = date("Y-m-d h:i:s", time());
+                    $data = ['description'=>$request->description,'updated_at'=>date("Y-m-d h:i:s", time()),'created_at'=>date("Y-m-d h:i:s", time())];
+                    $insertRecord= Aboutus::where('id',$id)->update($data);
+                    if($insertRecord){
+                        $result = array('status'=> true, 'message'=>'About  details updated  successfully.');
+                       }
+                       else
+                       {
+                        $result = array('status'=> false, 'message'=>'Faq Added  Failed.');
+                       }
+                }
+                else
+                {
+                    $date = date("Y-m-d h:i:s", time());
+                    $data = ['description'=>$request->description,'updated_at'=>date("Y-m-d h:i:s", time()),'created_at'=>date("Y-m-d h:i:s", time())];
+                    $insertRecord=    Aboutus::create($data);
+                    if($insertRecord){
+                        $result = array('status'=> true, 'message'=>'About  details added  successfully.');
+                       }
+                       else
+                       {
+                        $result = array('status'=> false, 'message'=>'Faq Added  Failed.');
+                       }
+                }
+               
+            }
+            echo json_encode($result);
+        }
+     }
+
+     public function getdataSubscriptions()
+     {
+         $subscriptions  =  Subscriptions::orderBy('id', 'DESC')->get();  //table
+         return view('Pages.admin_subscriptions',compact('subscriptions'));   
+     }
+     
+      public function editSubscriptions($id)
+     {
+         $subscriptions =  Subscriptions::where('id',$id)->first();
+         if(!empty($subscriptions))
+         {
+             //dd($subscriptions);
+             return view('Pages.edit_subscriptions',compact('subscriptions'));
+         }   
+     }
+     
+    public function subscriptionsUpdate(Request $request)
+     {
+         if(!empty($request->id) && $request->id == 1)
+         {
+             $updateData = array(
+                 'weekBusiness'=>$request->BusinessoftheWeek,
+                 'featuredBusiness'=>$request->FeaturedBusiness,
+                 'weekAndFeatured'=>$request->WeekAndFeaturedBusiness,
+                 'updated_at'=>date("Y-m-d h:i:s", time())
+             );
+ 
+             $updateRecord = Subscriptions::where('id',$request->id)->update($updateData);
+ 
+             if($updateRecord){
+                 $result = array('status'=> true, 'message'=>'Subscription Update successfully.');
+             }else{
+                 $result = array('status'=> false, 'message'=>'Subscription Update Failed.');
+             }
+         }
+         else
+         {
+             $result = array('status'=> false, 'message'=>'Something Went Wrong!');
+         }
+         echo json_encode($result);
+     }
 }

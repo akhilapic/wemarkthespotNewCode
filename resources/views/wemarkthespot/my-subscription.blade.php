@@ -10,9 +10,20 @@
                <div class="col-md-4 pe-lg-5">
                   <aside>
                      <div class="BoxShade UserBox mb-4">
-                        <figure><img src="{{asset('assets/images/img-6.png')}}"></figure>
-                        <p><strong>Royal Bar</strong></p>
-                        <p class="rating">4.7 <span class="icon-star"></span></p>
+                        <figure> @if($account->business_images)   
+                        <img src="{{$account->business_images}}">
+                        @elseif($account->image)
+                        <img src="{{$account->image}}">
+                        else
+                        <img src="{{asset('assets/images/img-6.png')}}">
+                        @endif</figure>
+                        @if($account->business_name)  
+                     <p>{{$account->business_name}}</p>
+                     @else
+                     <p>Business Name</p>
+                     @endif
+                        <p class="rating">@if($account->ratting) {{$account->ratting}} @else 0.0 @endif  <span class="icon-star"></span></p>
+                  
                         <p class="verify">Verified</p>
                      </div>
                      <div class="BoxShade">
